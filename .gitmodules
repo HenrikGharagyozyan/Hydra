@@ -1,0 +1,3 @@
+[submodule "Hydra/vendor/spdlog"]
+	path = Hydra/vendor/spdlog
+	url = https://github.com/gabime/spdlog
