@@ -9,3 +9,5 @@
 #else
 	#error Hydra only support Windows!
 #endif // HD_PLATFORM_WINDOWS
+
+#define BIT(x) (1 << x)

@@ -4,6 +4,9 @@
     <Filter Include="Hydra">
       <UniqueIdentifier>{BDF6590D-290B-82BE-F28C-251E5E607EEF}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Hydra\Events">
+      <UniqueIdentifier>{010CD9E9-ED6E-688E-96F4-A04482363411}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Hydra.h" />
@@ -16,9 +19,22 @@
     <ClInclude Include="src\Hydra\EntryPoint.h">
       <Filter>Hydra</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\Events\ApplicationEvent.h">
+      <Filter>Hydra\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\Events\Event.h">
+      <Filter>Hydra\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\Events\KeyEvent.h">
+      <Filter>Hydra\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\Events\MouseEvent.h">
+      <Filter>Hydra\Events</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\Log.h">
       <Filter>Hydra</Filter>
     </ClInclude>
+    <ClInclude Include="src\hdpch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hydra\Application.cpp">
@@ -27,5 +43,6 @@
     <ClCompile Include="src\Hydra\Log.cpp">
       <Filter>Hydra</Filter>
     </ClCompile>
+    <ClCompile Include="src\hdpch.cpp" />
   </ItemGroup>
 </Project>
