@@ -12,6 +12,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "Hydra/Log.h"
+
 #ifdef HD_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif

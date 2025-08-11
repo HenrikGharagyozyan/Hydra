@@ -10,6 +10,12 @@ workspace "Hydra"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Hydra/vendor/GLFW/include"
+
+include "Hydra/vendor/GLFW"
+
 project "Hydra"
 	location "Hydra"
 	kind "SharedLib"
@@ -30,7 +36,14 @@ project "Hydra"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}"
+	}
+
+	links
+	{
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	buildoptions { "/utf-8" }
