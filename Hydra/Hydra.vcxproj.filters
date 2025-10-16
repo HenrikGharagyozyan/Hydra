@@ -37,6 +37,12 @@
     <ClInclude Include="src\Hydra\Events\MouseEvent.h">
       <Filter>Hydra\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\Layer.h">
+      <Filter>Hydra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\LayerStack.h">
+      <Filter>Hydra</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\Log.h">
       <Filter>Hydra</Filter>
     </ClInclude>
@@ -50,6 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hydra\Application.cpp">
+      <Filter>Hydra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\Layer.cpp">
+      <Filter>Hydra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\LayerStack.cpp">
       <Filter>Hydra</Filter>
     </ClCompile>
     <ClCompile Include="src\Hydra\Log.cpp">
