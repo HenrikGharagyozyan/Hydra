@@ -13,8 +13,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Hydra/vendor/GLFW/include"
+IncludeDir["Glad"] = "Hydra/vendor/Glad/include"
 
 include "Hydra/vendor/GLFW"
+include "Hydra/vendor/Glad"
 
 project "Hydra"
 	location "Hydra"
@@ -37,12 +39,14 @@ project "Hydra"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}"
 	}
 
 	links
 	{
 		"GLFW",
+		"Glad",
 		"opengl32.lib"
 	}
 
@@ -56,7 +60,8 @@ project "Hydra"
 		defines
 		{
 			"HD_PLATFORM_WINDOWS",
-			"HD_BUILD_DLL"
+			"HD_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands

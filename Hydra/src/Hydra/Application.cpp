@@ -3,7 +3,7 @@
 
 #include "Hydra/Log.h"
 
-#include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace Hydra
 {
@@ -47,7 +47,7 @@ namespace Hydra
 	{
 		while (m_Running)
 		{
-			glClearColor(1, 0, 1, 1);
+			glClearColor(0.6, 0.6, 0.7, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			for (Layer* layer : m_LayerStack)
