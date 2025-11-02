@@ -53,6 +53,8 @@
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\hdpch.h" />
+    <ClInclude Include="src\Hydra\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hydra\Application.cpp">
@@ -71,5 +73,7 @@
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\hdpch.cpp" />
+    <ClCompile Include="src\Hydra\ImGui\ImGuiLayer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.cpp" />
   </ItemGroup>
 </Project>

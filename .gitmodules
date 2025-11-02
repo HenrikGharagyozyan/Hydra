@@ -4,3 +4,6 @@
 [submodule "Hydra/vendor/GLFW"]
 	path = Hydra/vendor/GLFW
 	url = https://github.com/1HenrikGharagyozyan/glfw
+[submodule "Hydra/vendor/imgui"]
+	path = Hydra/vendor/imgui
+	url = https://github.com/1HenrikGharagyozyan/imgui.git

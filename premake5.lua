@@ -8,15 +8,19 @@ workspace "Hydra"
 		"Dist"
 	}
 
+	startproject "Sandbox"
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Hydra/vendor/GLFW/include"
 IncludeDir["Glad"] = "Hydra/vendor/Glad/include"
+IncludeDir["ImGui"] = "Hydra/vendor/imgui"
 
 include "Hydra/vendor/GLFW"
 include "Hydra/vendor/Glad"
+include "Hydra/vendor/imgui"
 
 project "Hydra"
 	location "Hydra"
@@ -40,13 +44,15 @@ project "Hydra"
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}"
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links
 	{
 		"GLFW",
 		"Glad",
+		"ImGui",
 		"opengl32.lib"
 	}
 
