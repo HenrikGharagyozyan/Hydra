@@ -7,8 +7,14 @@
     <Filter Include="Hydra\Events">
       <UniqueIdentifier>{010CD9E9-ED6E-688E-96F4-A04482363411}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Hydra\ImGui">
+      <UniqueIdentifier>{A7C541AA-137B-BA9F-9C6F-B4760824B1A3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Platform">
       <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\OpenGL">
+      <UniqueIdentifier>{1E7D2C1D-8A08-9AE1-9319-1DD6FF23F6E1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Platform\Windows">
       <UniqueIdentifier>{64FBD71A-50F4-F66C-7926-DCF1657ED678}</UniqueIdentifier>
@@ -37,6 +43,9 @@
     <ClInclude Include="src\Hydra\Events\MouseEvent.h">
       <Filter>Hydra\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\ImGui\ImGuiLayer.h">
+      <Filter>Hydra\ImGui</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\Layer.h">
       <Filter>Hydra</Filter>
     </ClInclude>
@@ -49,16 +58,20 @@
     <ClInclude Include="src\Hydra\Window.h">
       <Filter>Hydra</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.h">
+      <Filter>Platform\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\hdpch.h" />
-    <ClInclude Include="src\Hydra\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hydra\Application.cpp">
       <Filter>Hydra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\ImGui\ImGuiLayer.cpp">
+      <Filter>Hydra\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\Hydra\Layer.cpp">
       <Filter>Hydra</Filter>
@@ -69,11 +82,12 @@
     <ClCompile Include="src\Hydra\Log.cpp">
       <Filter>Hydra</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.cpp">
+      <Filter>Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\hdpch.cpp" />
-    <ClCompile Include="src\Hydra\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.cpp" />
   </ItemGroup>
 </Project>
