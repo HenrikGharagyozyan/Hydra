@@ -1,5 +1,6 @@
 workspace "Hydra"
 	architecture "x64"
+	startproject "Sandbox"
 
 	configurations
 	{
@@ -8,7 +9,6 @@ workspace "Hydra"
 		"Dist"
 	}
 
-	startproject "Sandbox"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
