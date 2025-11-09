@@ -10,6 +10,10 @@
 	#error Hydra only support Windows!
 #endif 
 
+#ifdef HD_DEBUG
+	#define HD_ENABLE_ASSERTS
+#endif
+
 #ifdef HD_ENABLE_ASSERTS
 	#define HD_ASSERT(x, ...) { if (!(x)) { HD_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 	#define HD_CORE_ASSERT(x, ...) { if (!(x)) { HD_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
