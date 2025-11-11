@@ -164,6 +164,7 @@
     <ClInclude Include="src\Hydra\Events\KeyEvent.h" />
     <ClInclude Include="src\Hydra\Events\MouseEvent.h" />
     <ClInclude Include="src\Hydra\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="src\Hydra\Input.h" />
     <ClInclude Include="src\Hydra\Layer.h" />
     <ClInclude Include="src\Hydra\LayerStack.h" />
     <ClInclude Include="src\Hydra\Log.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\hdpch.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hydra\Application.cpp" />
@@ -183,6 +185,7 @@
     <ClCompile Include="src\hdpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
