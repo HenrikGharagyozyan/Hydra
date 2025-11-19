@@ -7,3 +7,6 @@
 [submodule "Hydra/vendor/imgui"]
 	path = Hydra/vendor/imgui
 	url = https://github.com/1HenrikGharagyozyan/imgui.git
+[submodule "Hydra/vendor/glm"]
+	path = Hydra/vendor/glm
+	url = https://github.com/g-truc/glm
