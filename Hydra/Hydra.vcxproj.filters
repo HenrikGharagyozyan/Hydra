@@ -46,6 +46,12 @@
     <ClInclude Include="src\Hydra\ImGui\ImGuiLayer.h">
       <Filter>Hydra\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\Input.h">
+      <Filter>Hydra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\KeyCodes.h">
+      <Filter>Hydra</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\Layer.h">
       <Filter>Hydra</Filter>
     </ClInclude>
@@ -55,18 +61,22 @@
     <ClInclude Include="src\Hydra\Log.h">
       <Filter>Hydra</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\MouseButtonCodes.h">
+      <Filter>Hydra</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\Window.h">
       <Filter>Hydra</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.h">
       <Filter>Platform\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowsInput.h">
+      <Filter>Platform\Windows</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\hdpch.h" />
-    <ClInclude Include="src\Hydra\Input.h" />
-    <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hydra\Application.cpp">
@@ -87,10 +97,12 @@
     <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.cpp">
       <Filter>Platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
+      <Filter>Platform\Windows</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\hdpch.cpp" />
-    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
   </ItemGroup>
 </Project>

@@ -21,7 +21,7 @@ namespace Hydra
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
-	}
+	} 
 
 	Application::~Application()
 	{
@@ -59,9 +59,6 @@ namespace Hydra
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
-
-			auto [x, y] = Input::GetMousePosition();
-			HD_TRACE("{0}, {1}", x, y);
 
 			m_Window->OnUpdate();
 		}

@@ -10,12 +10,20 @@ public:
 
 	void OnUpdate() override
 	{
-		HD_INFO("ExampleLayer::Update");
+		if (Hydra::Input::IsKeyPressed(HD_KEY_TAB))
+			HD_TRACE("Tab key is pressed (poll)!");
+
 	}
 
 	void OnEvent(Hydra::Event& event) override
 	{
-		HD_TRACE("{0}", event);
+		if (event.GetEventType() == Hydra::EventType::KeyPressed)
+		{
+			Hydra::KeyPressedEvent& e = (Hydra::KeyPressedEvent&)event;
+			if (e.GetKeyCode() == HD_KEY_TAB)
+				HD_TRACE("Tab key is pressed (event)!");
+			HD_TRACE("{0}", (char)e.GetKeyCode());
+		}
 	}
 
 };
