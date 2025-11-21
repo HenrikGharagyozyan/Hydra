@@ -171,7 +171,6 @@
     <ClInclude Include="src\Hydra\Log.h" />
     <ClInclude Include="src\Hydra\MouseButtonCodes.h" />
     <ClInclude Include="src\Hydra\Window.h" />
-    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\hdpch.h" />
@@ -597,11 +596,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hydra\Application.cpp" />
+    <ClCompile Include="src\Hydra\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Hydra\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Hydra\Layer.cpp" />
     <ClCompile Include="src\Hydra\LayerStack.cpp" />
     <ClCompile Include="src\Hydra\Log.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGlRenderer.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\hdpch.cpp">

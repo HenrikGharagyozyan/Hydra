@@ -7,6 +7,8 @@
 #include "Hydra/Events/Event.h"
 #include "Hydra/Events/ApplicationEvent.h"
 
+#include "Hydra/ImGui/ImGuiLayer.h"
+
 namespace Hydra
 {
 	class HYDRA_API Application
@@ -29,6 +31,7 @@ namespace Hydra
 		bool OnWindowClose(WindowCloseEvent& e);
 
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 
