@@ -1,153 +1,180 @@
 workspace "Hydra"
-	architecture "x64"
-	startproject "Sandbox"
+    architecture "x86_64"
+    startproject "Sandbox"
 
-	configurations
-	{
-		"Debug",
-		"Release",
-		"Dist"
-	}
-
+    configurations
+    {
+        "Debug",
+        "Release",
+        "Dist"
+    }
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
--- Include directories relative to root folder (solution directory)
+-- Include directories
 IncludeDir = {}
-IncludeDir["GLFW"] = "Hydra/vendor/GLFW/include"
-IncludeDir["Glad"] = "Hydra/vendor/Glad/include"
+IncludeDir["GLFW"]  = "Hydra/vendor/GLFW/include"
+IncludeDir["Glad"]  = "Hydra/vendor/Glad/include"
 IncludeDir["ImGui"] = "Hydra/vendor/imgui"
-IncludeDir["glm"] = "Hydra/vendor/glm"
+IncludeDir["glm"]   = "Hydra/vendor/glm"
 
 group "Dependencies"
-	include "Hydra/vendor/GLFW"
-	include "Hydra/vendor/Glad"
-	include "Hydra/vendor/imgui"
-
+    include "Hydra/vendor/GLFW"
+    include "Hydra/vendor/Glad"
+    include "Hydra/vendor/imgui"
 group ""
+filter {} -- clear filter after including dependencies
 
-
+-- ===================== Hydra (Engine) =====================
 project "Hydra"
-	location "Hydra"
-	kind "SharedLib"
-	language "C++"
-	staticruntime "off"
+    location "Hydra"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "off"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir    ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "hdpch.h"
-	pchsource "Hydra/src/hdpch.cpp"
+    pchheader "hdpch.h"
+    pchsource "Hydra/src/hdpch.cpp"
 
-	files 
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl",
-	}
+    files
+    {
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp",
 
-	includedirs
-	{
-		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
-	}
+        "%{prj.name}/vendor/glm/glm/**.hpp",
+        "%{prj.name}/vendor/glm/glm/**.inl"
+    }
 
-	links
-	{
-		"GLFW",
-		"Glad",
-		"ImGui",
-		"opengl32.lib"
-	}
+    includedirs
+    {
+        "%{prj.name}/src",
+        "%{prj.name}/vendor/spdlog/include",
 
-	buildoptions { "/utf-8" }
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}",
+        "%{IncludeDir.ImGui}",
+        "%{IncludeDir.glm}"
+    }
 
-	filter "system:windows"
-		cppdialect "C++17"
-		systemversion "latest"
+    links
+    {
+        "GLFW",
+        "Glad",
+        "ImGui"
+    }
 
-		defines
-		{
-			"HD_PLATFORM_WINDOWS",
-			"HD_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
-		}
+    defines
+    {
+        "GLFW_INCLUDE_NONE",
+        "HD_BUILD_DLL"
+    }
 
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
-		}
+    -- PCH: не компилировать header напрямую
+    filter "files:**/hdpch.h"
+        flags { "NoPCH" }
 
-	filter "configurations:Debug"
-		defines "HD_DEBUG"
-		runtime "Debug"
-		symbols "On"
+    filter "system:windows"
+        systemversion "latest"
 
-	filter "configurations:Release"
-		defines "HD_RELEASE"
-		runtime "Release"
-		optimize "On"
+        defines
+        {
+            "HD_PLATFORM_WINDOWS"
+        }
 
-	filter "configurations:Dist"
-		defines "HD_DIST"
-		runtime "Release"
-		optimize "On"
+        links
+        {
+            "opengl32"
+        }
 
+        postbuildcommands
+        {
+            ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox/")
+        }
 
+    filter "system:linux"
+        defines
+        {
+            "HD_PLATFORM_LINUX"
+        }
+
+        links
+        {
+            "GL",
+            "pthread",
+            "dl",
+            "X11"
+        }
+
+        pic "On"
+
+    filter "configurations:Debug"
+        defines "HD_DEBUG"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        defines "HD_RELEASE"
+        runtime "Release"
+        optimize "On"
+
+    filter "configurations:Dist"
+        defines "HD_DIST"
+        runtime "Release"
+        optimize "Full"
+
+    filter {}
+
+-- ===================== Sandbox =====================
 project "Sandbox"
-	location "Sandbox"
-	kind "ConsoleApp"
-	language "C++"
-	staticruntime "off"
+    location "Sandbox"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "off"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir    ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	files 
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
+    files
+    {
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp"
+    }
 
-	includedirs
-	{
-		"Hydra/vendor/spdlog/include",
-		"Hydra/src",
-		"%{IncludeDir.glm}"
-	}
+    includedirs
+    {
+        "Hydra/src",
+        "Hydra/vendor/spdlog/include",
+        "%{IncludeDir.glm}"
+    }
 
-	links
-	{
-		"Hydra"
-	}
+    links
+    {
+        "Hydra"
+    }
 
-	buildoptions { "/utf-8" }
+    filter "system:windows"
+        defines "HD_PLATFORM_WINDOWS"
 
-	filter "system:windows"
-		cppdialect "C++17"
-		systemversion "latest"
+    filter "system:linux"
+        defines "HD_PLATFORM_LINUX"
 
-		defines
-		{
-			"HD_PLATFORM_WINDOWS"
-		}
+    filter "configurations:Debug"
+        defines "HD_DEBUG"
+        runtime "Debug"
+        symbols "On"
 
-	filter "configurations:Debug"
-		defines "HD_DEBUG"
-		runtime "Debug"
-		symbols "On"
+    filter "configurations:Release"
+        defines "HD_RELEASE"
+        runtime "Release"
+        optimize "On"
 
-	filter "configurations:Release"
-		defines "HD_RELEASE"
-		runtime "Release"
-		optimize "On"
+    filter "configurations:Dist"
+        defines "HD_DIST"
+        runtime "Release"
+        optimize "Full"
 
-	filter "configurations:Dist"
-		defines "HD_DIST"
-		runtime "Release"
-		optimize "On"
+    filter {}

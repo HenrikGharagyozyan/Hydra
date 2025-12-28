@@ -1,7 +1,26 @@
 # Directories
 .vs/
+.vscode/
 bin/
 bin-int/
 
 # Files
 *.user
+*.so
+*.a
+*.o
+*.d
+
+# Premake generated files
+Makefile
+*.make
+*.workspace
+*.solution
+
+# Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
