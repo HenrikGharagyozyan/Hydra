@@ -14,18 +14,22 @@
 #endif
 
 // ================= DLL EXPORT / IMPORT =================
+#ifdef HD_DYNAMIC_LINK
 #ifdef HD_PLATFORM_WINDOWS
-#ifdef HD_BUILD_DLL
+#ifdef HZ_BUILD_DLL
 #define HYDRA_API __declspec(dllexport)
 #else
 #define HYDRA_API __declspec(dllimport)
 #endif
 #elif defined(HD_PLATFORM_LINUX)
-#ifdef HD_BUILD_DLL
+#ifdef HZ_BUILD_DLL
 #define HYDRA_API __attribute__((visibility("default")))
 #else
 #define HYDRA_API
 #endif
+#endif
+#else
+#define HYDRA_API
 #endif
 
 // ================= DEBUG ASSERTS =================

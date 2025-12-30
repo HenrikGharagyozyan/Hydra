@@ -1,180 +1,190 @@
 workspace "Hydra"
-    architecture "x86_64"
-    startproject "Sandbox"
+	architecture "x64"
+	startproject "Sandbox"
 
-    configurations
-    {
-        "Debug",
-        "Release",
-        "Dist"
-    }
+	configurations
+	{
+		"Debug",
+		"Release",
+		"Dist"
+	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
--- Include directories
+-- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"]  = "Hydra/vendor/GLFW/include"
-IncludeDir["Glad"]  = "Hydra/vendor/Glad/include"
+IncludeDir["GLFW"] = "Hydra/vendor/GLFW/include"
+IncludeDir["Glad"] = "Hydra/vendor/Glad/include"
 IncludeDir["ImGui"] = "Hydra/vendor/imgui"
-IncludeDir["glm"]   = "Hydra/vendor/glm"
+IncludeDir["glm"] = "Hydra/vendor/glm"
 
-group "Dependencies"
-    include "Hydra/vendor/GLFW"
-    include "Hydra/vendor/Glad"
-    include "Hydra/vendor/imgui"
-group ""
-filter {} -- clear filter after including dependencies
+include "Hydra/vendor/GLFW"
+include "Hydra/vendor/Glad"
+include "Hydra/vendor/imgui"
 
--- ===================== Hydra (Engine) =====================
 project "Hydra"
-    location "Hydra"
-    kind "SharedLib"
-    language "C++"
-    cppdialect "C++17"
-    staticruntime "off"
+	location "Hydra"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir    ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-    pchheader "hdpch.h"
-    pchsource "Hydra/src/hdpch.cpp"
+	pchheader "hdpch.h"
+	pchsource "Hydra/src/hdpch.cpp"
 
-    files
-    {
-        "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp",
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl",
+	}
 
-        "%{prj.name}/vendor/glm/glm/**.hpp",
-        "%{prj.name}/vendor/glm/glm/**.inl"
-    }
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
 
-    includedirs
-    {
-        "%{prj.name}/src",
-        "%{prj.name}/vendor/spdlog/include",
+	includedirs
+	{
+		"%{prj.name}/src",
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
+	}
 
-        "%{IncludeDir.GLFW}",
-        "%{IncludeDir.Glad}",
-        "%{IncludeDir.ImGui}",
-        "%{IncludeDir.glm}"
-    }
+	links 
+	{ 
+		"GLFW",
+		"Glad",
+		"ImGui"
+	}
 
-    links
-    {
-        "GLFW",
-        "Glad",
-        "ImGui"
-    }
+	filter "system:windows"
+		systemversion "latest"
 
-    defines
-    {
-        "GLFW_INCLUDE_NONE",
-        "HD_BUILD_DLL"
-    }
+		links
+		{
+			"opengl32.lib"
+		}
 
-    -- PCH: не компилировать header напрямую
-    filter "files:**/hdpch.h"
-        flags { "NoPCH" }
+		defines
+		{
+			"HZ_PLATFORM_WINDOWS",
+			"HZ_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
+		}
 
-    filter "system:windows"
-        systemversion "latest"
+	filter "system:linux"
+		links
+		{
+			"GL",
+			"pthread",
+			"dl",
+			"X11"
+		}
 
-        defines
-        {
-            "HD_PLATFORM_WINDOWS"
-        }
+		defines
+		{
+			"HZ_PLATFORM_LINUX",
+			"HD_DYNAMIC_LINK",
+			"HZ_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
+		}
 
-        links
-        {
-            "opengl32"
-        }
+	filter "configurations:Debug"
+		defines "HZ_DEBUG"
+		runtime "Debug"
+		symbols "on"
 
-        postbuildcommands
-        {
-            ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox/")
-        }
+	filter "configurations:Release"
+		defines "HZ_RELEASE"
+		runtime "Release"
+		optimize "on"
 
-    filter "system:linux"
-        defines
-        {
-            "HD_PLATFORM_LINUX"
-        }
+	filter "configurations:Dist"
+		defines "HZ_DIST"
+		runtime "Release"
+		optimize "on"
 
-        links
-        {
-            "GL",
-            "pthread",
-            "dl",
-            "X11"
-        }
-
-        pic "On"
-
-    filter "configurations:Debug"
-        defines "HD_DEBUG"
-        runtime "Debug"
-        symbols "On"
-
-    filter "configurations:Release"
-        defines "HD_RELEASE"
-        runtime "Release"
-        optimize "On"
-
-    filter "configurations:Dist"
-        defines "HD_DIST"
-        runtime "Release"
-        optimize "Full"
-
-    filter {}
-
--- ===================== Sandbox =====================
 project "Sandbox"
-    location "Sandbox"
-    kind "ConsoleApp"
-    language "C++"
-    cppdialect "C++17"
-    staticruntime "off"
+	location "Sandbox"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir    ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-    files
-    {
-        "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
-    }
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
 
-    includedirs
-    {
-        "Hydra/src",
-        "Hydra/vendor/spdlog/include",
-        "%{IncludeDir.glm}"
-    }
+	includedirs
+	{
+		"Hydra/vendor/spdlog/include",
+		"Hydra/src",
+		"Hydra/vendor",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
+	}
 
-    links
-    {
-        "Hydra"
-    }
+	links
+	{
+		"Hydra",
+		"GLFW",
+		"Glad", 
+		"ImGui"
+	}
 
-    filter "system:windows"
-        defines "HD_PLATFORM_WINDOWS"
+	filter "system:windows"
+		systemversion "latest"
 
-    filter "system:linux"
-        defines "HD_PLATFORM_LINUX"
+		links
+		{
+			"opengl32.lib"
+		}
 
-    filter "configurations:Debug"
-        defines "HD_DEBUG"
-        runtime "Debug"
-        symbols "On"
+		defines
+		{
+			"HZ_PLATFORM_WINDOWS"
+		}
 
-    filter "configurations:Release"
-        defines "HD_RELEASE"
-        runtime "Release"
-        optimize "On"
+	filter "system:linux"
+		links
+		{
+			"GL",
+			"pthread",
+			"dl",
+			"X11"
+		}
 
-    filter "configurations:Dist"
-        defines "HD_DIST"
-        runtime "Release"
-        optimize "Full"
+		defines
+		{
+			"HZ_PLATFORM_LINUX"
+		}
 
-    filter {}
+	filter "configurations:Debug"
+		defines "HZ_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "HZ_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:Dist"
+		defines "HZ_DIST"
+		runtime "Release"
+		optimize "on"
