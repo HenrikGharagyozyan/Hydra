@@ -4,46 +4,46 @@
 // Allow the build system to predefine platform macros. Only define
 // them here if they are not already provided on the command line.
 #if !defined(HD_PLATFORM_WINDOWS) && !defined(HD_PLATFORM_LINUX)
-#if defined(_WIN32) || defined(_WIN64)
-#define HD_PLATFORM_WINDOWS
-#elif defined(__linux__)
-#define HD_PLATFORM_LINUX
-#else
-#error Hydra only supports Windows and Linux!
-#endif
+    #if defined(_WIN32) || defined(_WIN64)
+        #define HD_PLATFORM_WINDOWS
+    #elif defined(__linux__)
+        #define HD_PLATFORM_LINUX
+    #else
+        #error Hydra only supports Windows and Linux!
+    #endif
 #endif
 
 // ================= DLL EXPORT / IMPORT =================
 #ifdef HD_DYNAMIC_LINK
-#ifdef HD_PLATFORM_WINDOWS
-#ifdef HZ_BUILD_DLL
-#define HYDRA_API __declspec(dllexport)
+    #ifdef HD_PLATFORM_WINDOWS
+        #ifdef HZ_BUILD_DLL
+            #define HYDRA_API __declspec(dllexport)
+        #else
+            #define HYDRA_API __declspec(dllimport)
+        #endif
+        #elif defined(HD_PLATFORM_LINUX)
+        #ifdef HZ_BUILD_DLL
+            #define HYDRA_API __attribute__((visibility("default")))
+        #else
+            #define HYDRA_API
+        #endif
+    #endif
 #else
-#define HYDRA_API __declspec(dllimport)
-#endif
-#elif defined(HD_PLATFORM_LINUX)
-#ifdef HZ_BUILD_DLL
-#define HYDRA_API __attribute__((visibility("default")))
-#else
-#define HYDRA_API
-#endif
-#endif
-#else
-#define HYDRA_API
+    #define HYDRA_API
 #endif
 
 // ================= DEBUG ASSERTS =================
 #ifdef HD_DEBUG
-#define HD_ENABLE_ASSERTS
+    #define HD_ENABLE_ASSERTS
 #endif
 
 #ifdef HD_PLATFORM_WINDOWS
-#define HD_DEBUGBREAK() __debugbreak()
+    #define HD_DEBUGBREAK() __debugbreak()
 #elif defined(HD_PLATFORM_LINUX)
-#include <signal.h>
-#define HD_DEBUGBREAK() raise(SIGTRAP)
+    #include <signal.h>
+    #define HD_DEBUGBREAK() raise(SIGTRAP)
 #else
-#define HD_DEBUGBREAK()
+    #define HD_DEBUGBREAK()
 #endif
 
 #ifdef HD_ENABLE_ASSERTS
@@ -64,8 +64,8 @@
         }                                                        \
     }
 #else
-#define HD_ASSERT(x, ...)
-#define HD_CORE_ASSERT(x, ...)
+    #define HD_ASSERT(x, ...)
+    #define HD_CORE_ASSERT(x, ...)
 #endif
 
 // ================= HELPERS =================
