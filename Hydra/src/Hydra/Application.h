@@ -9,6 +9,8 @@
 
 #include "Hydra/ImGui/ImGuiLayer.h"
 
+#include "Hydra/Renderer/Shader.h"
+
 namespace Hydra
 {
 	class HYDRA_API Application
@@ -38,6 +40,7 @@ namespace Hydra
 		unsigned int m_VertexArray;
 		unsigned int m_VertexBuffer;
 		unsigned int m_IndexBuffer;
+		std::unique_ptr<Shader> m_Shader;
 	private:
 		static Application* s_Instance;
 	};

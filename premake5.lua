@@ -25,6 +25,7 @@ group "Dependencies"
 	include "Hydra/vendor/imgui"
 group ""
 
+
 project "Hydra"
 	location "Hydra"
 	kind "StaticLib"
