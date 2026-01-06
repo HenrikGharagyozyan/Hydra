@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 
 #ifdef HD_PLATFORM_LINUX
 
-extern Hydra::Application *Hydra::CreateApplication();
+extern Hydra::Application* Hydra::CreateApplication();
 
 int main(int argc, char **argv)
 {
