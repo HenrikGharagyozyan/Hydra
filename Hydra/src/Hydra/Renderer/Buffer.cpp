@@ -1,10 +1,10 @@
 #include "hdpch.h"
 #include "Buffer.h"
 
-#include "Hydra/Log.h"
 #include "Renderer.h"
 
 #include "Platform/OpenGL/OpenGLBuffer.h"
+#include "Hydra/Log.h"
 
 namespace Hydra
 {
