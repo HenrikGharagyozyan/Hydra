@@ -1,0 +1,25 @@
+#include "hdpch.h"
+
+#include "VertexArray.h"
+#include "Hydra/Renderer/Renderer.h"
+#include "Platform/OpenGL/OpenGLVertexArray.h"
+
+namespace Hydra
+{
+
+    VertexArray* VertexArray::Create()
+    {
+        switch (Renderer::GetAPI())
+        {
+            case RendererAPI::None:    
+                HD_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); 
+                return nullptr;
+            case RendererAPI::OpenGL:  
+                return new OpenGLVertexArray();
+        }
+
+        HD_ASSERT(false, "Unknown RendererAPI!");
+        return nullptr;
+    }
+
+}
