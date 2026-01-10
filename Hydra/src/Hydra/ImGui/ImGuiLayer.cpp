@@ -19,10 +19,6 @@ namespace Hydra
 	{
 	}
 
-	ImGuiLayer::~ImGuiLayer()
-	{
-	}
-
 	void ImGuiLayer::OnAttach()
 	{
 		// Setup Dear ImGui context

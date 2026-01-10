@@ -31,9 +31,9 @@ namespace Hydra
 		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
 		if (it != m_Layers.end())
 		{
+			layer->OnDetach();
 			m_Layers.erase(it);
 			--m_LayerInsertIndex;
-			layer->OnDetach();
 		}
 	}
 
