@@ -37,7 +37,7 @@ project "Hydra"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "hdpch.h"
-	pchsource "Hydra/src/hdpch.cpp"
+	pchsource "src/hdpch.cpp"
 
 	files
 	{

@@ -18,6 +18,7 @@ int main(int argc, char **argv)
 
 #endif // HD_PLATFORM_WINDOWS
 
+
 #ifdef HD_PLATFORM_LINUX
 
 extern Hydra::Application* Hydra::CreateApplication();
