@@ -12,6 +12,17 @@
 
 #include "Hydra/ImGui/ImGuiLayer.h"
 
+//---------Renderer----------------
+#include "Hydra/Renderer/Renderer.h"
+#include "Hydra/Renderer/RenderCommand.h"
+
+#include "Hydra/Renderer/Buffer.h"
+#include "Hydra/Renderer/Shader.h"
+#include "Hydra/Renderer/VertexArray.h"
+
+#include "Hydra/Renderer/OrtographicCamera.h"
+//----------------------------------
+
 //---------Entry Point--------------
 #include "Hydra/EntryPoint.h"
 //----------------------------------
