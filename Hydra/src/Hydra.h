@@ -6,6 +6,8 @@
 #include "Hydra/Layer.h"
 #include "Hydra/Log.h"
 
+#include "Hydra/Core/Timestep.h"
+
 #include "Hydra/Input.h"
 #include "Hydra/KeyCodes.h"
 #include "Hydra/MouseButtonCodes.h"

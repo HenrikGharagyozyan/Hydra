@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Hydra/Core.h"
+#include "Hydra/Core/Timestep.h"
 #include "Hydra/Events/Event.h"
 
 namespace Hydra
@@ -13,7 +14,7 @@ namespace Hydra
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 
