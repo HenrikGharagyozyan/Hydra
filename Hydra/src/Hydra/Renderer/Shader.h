@@ -1,9 +1,6 @@
 #pragma once
 
 #include <string>
-#include <cstdint> 
-
-#include <glm/glm.hpp>
 
 namespace Hydra
 {
@@ -11,17 +8,12 @@ namespace Hydra
     class Shader
     {
     public:
-        Shader(const std::string& vertexSrc, const std::string& fragmentSrc);
-        ~Shader();
+        virtual ~Shader() = default;
 
-        void Bind() const;
-        void Unbind() const;
+        virtual void Bind() const = 0;
+        virtual void Unbind() const = 0;
 
-        void UploadUniformFloat4(const std::string& name, const glm::vec4& values);
-        void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
-
-    private:
-        uint32_t m_RendererID;
+        static Shader* Create(const std::string& vertexSrc, const std::string& fragmentSrc);
     };
 
 }
