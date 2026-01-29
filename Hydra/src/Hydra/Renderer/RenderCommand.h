@@ -18,7 +18,7 @@ namespace Hydra
             s_RendererAPI->Clear();
         }
 
-        inline static void DrawIndexed(const std::shared_ptr<VertexArray>& VertexArray)
+        inline static void DrawIndexed(const Ref<VertexArray>& VertexArray)
         {
             s_RendererAPI->DrawIndexed(VertexArray);
         }

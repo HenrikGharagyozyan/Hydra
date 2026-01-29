@@ -20,7 +20,7 @@ public:
 			0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
 			0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f};
 
-		std::shared_ptr<Hydra::VertexBuffer> vertexBuffer;
+		Hydra::Ref<Hydra::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(Hydra::VertexBuffer::Create(vertices, sizeof(vertices)));
 		Hydra::BufferLayout layout = {
 			{Hydra::ShaderDataType::Float3, "a_Position"},
@@ -31,7 +31,7 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		unsigned int indices[3] = {0, 1, 2};
-		std::shared_ptr<Hydra::IndexBuffer> indexBuffer;
+		Hydra::Ref<Hydra::IndexBuffer> indexBuffer;
 		indexBuffer.reset(Hydra::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
@@ -43,14 +43,14 @@ public:
 			0.5f, 0.5f, 0.0f,
 			-0.5f, 0.5f, 0.0f};
 
-		std::shared_ptr<Hydra::VertexBuffer> squareVB;
+		Hydra::Ref<Hydra::VertexBuffer> squareVB;
 		squareVB.reset(Hydra::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 		squareVB->SetLayout({{Hydra::ShaderDataType::Float3, "a_Position"}});
 
 		m_SquareVA->AddVertexBuffer(squareVB);
 
 		unsigned int squareIndices[6] = {0, 1, 2, 2, 3, 0};
-		std::shared_ptr<Hydra::IndexBuffer> squareIB;
+		Hydra::Ref<Hydra::IndexBuffer> squareIB;
 		squareIB.reset(Hydra::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
@@ -183,11 +183,11 @@ public:
 	}
 
 private:
-	std::shared_ptr<Hydra::Shader> m_Shader;
-	std::shared_ptr<Hydra::VertexArray> m_VertexArray;
+	Hydra::Ref<Hydra::Shader> m_Shader;
+	Hydra::Ref<Hydra::VertexArray> m_VertexArray;
 
-	std::shared_ptr<Hydra::Shader> m_FlatColorShader;
-	std::shared_ptr<Hydra::VertexArray> m_SquareVA;
+	Hydra::Ref<Hydra::Shader> m_FlatColorShader;
+	Hydra::Ref<Hydra::VertexArray> m_SquareVA;
 
 	Hydra::OrtographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;

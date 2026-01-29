@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 // ================= PLATFORM DETECTION =================
 // Allow the build system to predefine platform macros. Only define
 // them here if they are not already provided on the command line.
@@ -71,3 +73,15 @@
 // ================= HELPERS =================
 #define BIT(x) (1 << x)
 #define HD_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
+
+namespace Hydra
+{
+
+    template<typename T>
+    using Scope = std::unique_ptr<T>;
+
+    template<typename T>
+    using Ref = std::shared_ptr<T>;
+
+}
