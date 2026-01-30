@@ -20,6 +20,7 @@
 
 #include "Hydra/Renderer/Buffer.h"
 #include "Hydra/Renderer/Shader.h"
+#include "Hydra/Renderer/Texture.h"
 #include "Hydra/Renderer/VertexArray.h"
 
 #include "Hydra/Renderer/OrtographicCamera.h"

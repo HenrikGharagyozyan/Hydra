@@ -11,7 +11,9 @@ if ! make config=debug; then
 fi
 
 echo "=== Starting Hydra Engine Sandbox ==="
-# Run the executable
-./bin/Debug-linux-x86_64/Sandbox/Sandbox
+# Run the executable from the Sandbox working directory so relative asset paths resolve
+pushd Sandbox > /dev/null
+../bin/Debug-linux-x86_64/Sandbox/Sandbox
+popd > /dev/null
 
 echo "=== Hydra Engine Sandbox exited ==="

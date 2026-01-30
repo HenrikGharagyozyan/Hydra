@@ -17,6 +17,7 @@ IncludeDir["GLFW"] = "Hydra/vendor/GLFW/include"
 IncludeDir["Glad"] = "Hydra/vendor/Glad/include"
 IncludeDir["ImGui"] = "Hydra/vendor/imgui"
 IncludeDir["glm"] = "Hydra/vendor/glm"
+IncludeDir["stb_image"] = "Hydra/vendor/stb_image"
 
 
 group "Dependencies"
@@ -43,6 +44,8 @@ project "Hydra"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
 	}
@@ -59,7 +62,8 @@ project "Hydra"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	links 
