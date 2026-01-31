@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HD_PCH_H
+#define HD_PCH_H
 
 #include <iostream>
 #include <memory>
@@ -17,3 +18,5 @@
 #ifdef HD_PLATFORM_WINDOWS
 #include <Windows.h>
 #endif
+
+#endif // HD_PCH_H
