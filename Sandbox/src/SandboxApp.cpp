@@ -93,7 +93,7 @@ public:
 			}
         )";
 
-		m_Shader.reset(Hydra::Shader::Create(vertexSrc, fragmentSrc));
+		m_Shader = Hydra::Shader::Create("VertexPosColor", vertexSrc, fragmentSrc);
 
 		std::string flatColorShaderVertexSrc = R"(
 			#version 330 core
@@ -127,15 +127,15 @@ public:
 			}
 		)";
 
-		m_FlatColorShader.reset(Hydra::Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
+		m_FlatColorShader = Hydra::Shader::Create("FlatColor", flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
 
-		m_TextureShader.reset(Hydra::Shader::Create("assets/shaders/Texture.glsl"));
+		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
 		m_Texture = Hydra::Texture2D::Create("assets/textures/Checkerboard.png");
 		m_GoogleLogoTexture = Hydra::Texture2D::Create("assets/textures/Google.png");
 
-		std::dynamic_pointer_cast<Hydra::OpenGLShader>(m_TextureShader)->Bind();
-		std::dynamic_pointer_cast<Hydra::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+		std::dynamic_pointer_cast<Hydra::OpenGLShader>(textureShader)->Bind();
+		std::dynamic_pointer_cast<Hydra::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Hydra::Timestep ts) override
@@ -179,11 +179,13 @@ public:
 			}
 		}
 
+		auto textureShader = m_ShaderLibrary.Get("Texture");
+
 		m_Texture->Bind();
-		Hydra::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Hydra::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		m_GoogleLogoTexture->Bind();
-		Hydra::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Hydra::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		// Triangle
 		// Hydra::Renderer::Submit(m_Shader, m_VertexArray);
@@ -203,11 +205,11 @@ public:
 	}
 
 private:
+	Hydra::ShaderLibrary m_ShaderLibrary; 
 	Hydra::Ref<Hydra::Shader> m_Shader;
 	Hydra::Ref<Hydra::VertexArray> m_VertexArray;
 
 	Hydra::Ref<Hydra::Shader> m_FlatColorShader;
-	Hydra::Ref<Hydra::Shader> m_TextureShader;
 	Hydra::Ref<Hydra::VertexArray> m_SquareVA;
 
 	Hydra::Ref<Hydra::Texture2D> m_Texture;
