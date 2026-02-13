@@ -11,6 +11,7 @@
 #include "Hydra/Input.h"
 #include "Hydra/KeyCodes.h"
 #include "Hydra/MouseButtonCodes.h"
+#include "Hydra/OrthographicCameraController.h"
 
 #include "Hydra/ImGui/ImGuiLayer.h"
 
@@ -23,7 +24,7 @@
 #include "Hydra/Renderer/Texture.h"
 #include "Hydra/Renderer/VertexArray.h"
 
-#include "Hydra/Renderer/OrtographicCamera.h"
+#include "Hydra/Renderer/OrthographicCamera.h"
 //----------------------------------
 
 //---------Entry Point--------------

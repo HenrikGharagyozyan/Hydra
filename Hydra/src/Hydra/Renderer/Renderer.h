@@ -2,7 +2,7 @@
 
 #include "RenderCommand.h"
 
-#include "OrtographicCamera.h"
+#include "OrthographicCamera.h"
 #include "Shader.h"
 
 namespace Hydra 
@@ -13,7 +13,7 @@ namespace Hydra
     public:
         static void Init();
 
-        static void BeginScene(OrtographicCamera& camera);
+        static void BeginScene(OrthographicCamera& camera);
         static void EndScene();
 
         static void Submit(const Ref<Shader>& shader, 
