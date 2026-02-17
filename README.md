@@ -1,7 +1,7 @@
 # Hydra
 Hydra Engine
 
-![Hydra](/Resources/Branding/Hydra_Logo_Text_Light_Square.png?raw=true "Hydra")
+![Hydra](Resources/Branding/Hydra_Logo_Text_Light_Square.png "Hydra")
 
 Hydra is an early-stage interactive application and rendering engine for Windows. Currently, not much is implemented; however, (almost) everything inside this repository is being developed progressively as the engine evolves.
 
