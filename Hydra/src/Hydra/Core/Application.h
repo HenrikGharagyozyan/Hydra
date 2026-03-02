@@ -3,7 +3,7 @@
 #include "Core.h"
 
 #include "Window.h"
-#include "Hydra/LayerStack.h"
+#include "Hydra/Core/LayerStack.h"
 #include "Hydra/Events/Event.h"
 #include "Hydra/Events/ApplicationEvent.h"
 

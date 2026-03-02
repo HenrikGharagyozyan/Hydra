@@ -1,7 +1,7 @@
 #include "hdpch.h"
 #include "Application.h"
 
-#include "Hydra/Log.h"
+#include "Hydra/Core/Log.h"
 
 #include "Hydra/Renderer/Renderer.h"
 

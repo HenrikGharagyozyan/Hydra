@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hydra/Input.h"
+#include "Hydra/Core/Input.h"
 
 namespace Hydra
 { 

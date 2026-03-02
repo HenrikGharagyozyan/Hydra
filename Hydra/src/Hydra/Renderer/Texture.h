@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Hydra/Core.h"
+#include "Hydra/Core/Core.h"
 
 namespace Hydra 
 {

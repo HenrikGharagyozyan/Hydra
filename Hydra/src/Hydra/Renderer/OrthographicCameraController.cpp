@@ -1,8 +1,8 @@
 #include "hdpch.h"
 #include "OrthographicCameraController.h"
 
-#include "Hydra/Input.h"
-#include "Hydra/KeyCodes.h"
+#include "Hydra/Core/Input.h"
+#include "Hydra/Core/KeyCodes.h"
 
 namespace Hydra
 {

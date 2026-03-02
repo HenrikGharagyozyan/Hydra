@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hydra/Layer.h"
+#include "Hydra/Core/Layer.h"
 
 #include "Hydra/Events/ApplicationEvent.h"
 #include "Hydra/Events/KeyEvent.h"

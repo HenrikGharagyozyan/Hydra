@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hydra/Window.h"
+#include "Hydra/Core/Window.h"
 #include "Hydra/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>
