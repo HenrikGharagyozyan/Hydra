@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer/OrthographicCamera.h"
+#include "Hydra/Renderer/OrthographicCamera.h"
 #include "Hydra/Core/Timestep.h"
 
 #include "Hydra/Events/ApplicationEvent.h"

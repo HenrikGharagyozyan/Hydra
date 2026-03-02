@@ -1,7 +1,7 @@
 #include "hdpch.h"
 #include "WindowsInput.h"
 
-#include "Hydra/Application.h"
+#include "Hydra/Core/Application.h"
 #include <GLFW/glfw3.h>
 
 namespace Hydra

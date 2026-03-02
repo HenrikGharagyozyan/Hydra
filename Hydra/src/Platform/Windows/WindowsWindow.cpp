@@ -7,7 +7,7 @@
 
 #include "Platform/OpenGL/OpenGLContext.h"
 
-#include <Hydra/Log.h>
+#include <Hydra/Core/Log.h>
 
 namespace Hydra
 {

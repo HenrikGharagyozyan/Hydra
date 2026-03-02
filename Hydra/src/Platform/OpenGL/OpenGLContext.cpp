@@ -6,7 +6,7 @@
 #include <glad/glad.h>
 #include <GL/gl.h>
 
-#include <Hydra/Core.h>
+#include <Hydra/Core/Core.h>
 
 namespace Hydra
 {
