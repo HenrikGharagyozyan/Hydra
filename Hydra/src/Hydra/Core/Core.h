@@ -3,16 +3,32 @@
 #include <memory>
 
 // ================= PLATFORM DETECTION =================
-// Allow the build system to predefine platform macros. Only define
-// them here if they are not already provided on the command line.
-#if !defined(HD_PLATFORM_WINDOWS) && !defined(HD_PLATFORM_LINUX)
-    #if defined(_WIN32) || defined(_WIN64)
+#ifdef _WIN32
+    #ifdef _WIN64
         #define HD_PLATFORM_WINDOWS
-    #elif defined(__linux__)
-        #define HD_PLATFORM_LINUX
     #else
-        #error Hydra only supports Windows and Linux!
+        #error "x86 Builds are not supported!"
     #endif
+#elif defined(__APPLE__) || defined(__MACH__)
+    #include <TargetConditionals.h>
+    #if TARGET_IPHONE_SIMULATOR == 1
+        #error "iOS simulator is not supported!"
+    #elif TARGET_OS_IPHONE == 1
+        #define HD_PLATFORM_IOS
+        #error "iOS is not supported!"
+    #elif TARGET_OS_MAC == 1
+        #define HD_PLATFORM_MACOS
+        #error "MacOS is not supported!"
+    #else
+        #error "Unknown Apple platform!"
+    #endif
+#elif defined(__ANDROID__)
+    #define HD_PLATFORM_ANDROID
+    #error "Android is not supported!"
+#elif defined(__linux__)
+    #define HD_PLATFORM_LINUX
+#else
+    #error "Unknown platform!"
 #endif
 
 // ================= DLL EXPORT / IMPORT =================
@@ -23,12 +39,14 @@
         #else
             #define HYDRA_API __declspec(dllimport)
         #endif
-        #elif defined(HD_PLATFORM_LINUX)
+    #elif defined(HD_PLATFORM_LINUX)
         #ifdef HZ_BUILD_DLL
             #define HYDRA_API __attribute__((visibility("default")))
         #else
             #define HYDRA_API
         #endif
+    #else
+        #define HYDRA_API
     #endif
 #else
     #define HYDRA_API
@@ -49,22 +67,8 @@
 #endif
 
 #ifdef HD_ENABLE_ASSERTS
-#define HD_ASSERT(x, ...)                                   \
-    {                                                       \
-        if (!(x))                                           \
-        {                                                   \
-            HD_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
-            HD_DEBUGBREAK();                                \
-        }                                                   \
-    }
-#define HD_CORE_ASSERT(x, ...)                                   \
-    {                                                            \
-        if (!(x))                                                \
-        {                                                        \
-            HD_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
-            HD_DEBUGBREAK();                                     \
-        }                                                        \
-    }
+    #define HD_ASSERT(x, ...) { if(!(x)) { HD_ERROR("Assertion Failed: {0}", __VA_ARGS__); HD_DEBUGBREAK(); } }
+    #define HD_CORE_ASSERT(x, ...) { if(!(x)) { HD_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); HD_DEBUGBREAK(); } }
 #else
     #define HD_ASSERT(x, ...)
     #define HD_CORE_ASSERT(x, ...)
@@ -74,14 +78,11 @@
 #define BIT(x) (1 << x)
 #define HD_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
-
-namespace Hydra
+namespace Hydra 
 {
-
     template<typename T>
     using Scope = std::unique_ptr<T>;
 
     template<typename T>
     using Ref = std::shared_ptr<T>;
-
 }

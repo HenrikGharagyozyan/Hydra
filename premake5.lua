@@ -80,16 +80,13 @@ project "Hydra"
 
 	filter "system:windows"
 		systemversion "latest"
-
 		links
 		{
 			"opengl32.lib"
 		}
-
 		defines
 		{
-			"HD_PLATFORM_WINDOWS",
-			"HZ_BUILD_DLL",
+			"HD_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
 
@@ -101,12 +98,10 @@ project "Hydra"
 			"dl",
 			"X11"
 		}
-
 		defines
 		{
-			"HD_PLATFORM_LINUX",
 			"HD_DYNAMIC_LINK",
-			"HZ_BUILD_DLL",
+			"HD_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
 
@@ -163,15 +158,9 @@ project "Sandbox"
 
 	filter "system:windows"
 		systemversion "latest"
-
 		links
 		{
 			"opengl32.lib"
-		}
-
-		defines
-		{
-			"HZ_PLATFORM_WINDOWS"
 		}
 
 	filter "system:linux"
@@ -183,22 +172,17 @@ project "Sandbox"
 			"X11"
 		}
 
-		defines
-		{
-			"HZ_PLATFORM_LINUX"
-		}
-
 	filter "configurations:Debug"
-		defines "HZ_DEBUG"
+		defines "HD_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "HZ_RELEASE"
+		defines "HD_RELEASE"
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
-		defines "HZ_DIST"
+		defines "HD_DIST"
 		runtime "Release"
 		optimize "on"
