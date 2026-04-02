@@ -34,7 +34,7 @@ namespace Hydra
         }
 
     private:
-        static RendererAPI* s_RendererAPI;
+        static Scope<RendererAPI> s_RendererAPI;
     };
 
 }
