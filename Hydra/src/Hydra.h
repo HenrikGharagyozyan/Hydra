@@ -26,7 +26,3 @@
 
 #include "Hydra/Renderer/OrthographicCamera.h"
 //----------------------------------
-
-//---------Entry Point--------------
-#include "Hydra/Core/EntryPoint.h"
-//----------------------------------
