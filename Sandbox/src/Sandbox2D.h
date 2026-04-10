@@ -22,5 +22,8 @@ private:
     Hydra::Ref<Hydra::VertexArray> m_SquareVA;
     Hydra::Ref<Hydra::Shader> m_FlatColorShader;
 
+    Hydra::Ref<Hydra::Texture2D> m_CheckerboardTexture;
+    
+
     glm::vec4 m_SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 };
