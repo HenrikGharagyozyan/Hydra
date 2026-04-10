@@ -17,6 +17,7 @@
 
 //---------Renderer----------------
 #include "Hydra/Renderer/Renderer.h"
+#include "Hydra/Renderer/Renderer2D.h"
 #include "Hydra/Renderer/RenderCommand.h"
 
 #include "Hydra/Renderer/Buffer.h"
