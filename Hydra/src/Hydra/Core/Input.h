@@ -4,7 +4,7 @@
 
 namespace Hydra
 {
-	class HYDRA_API Input
+	class Input
 	{
 	protected:
 		Input() = default;

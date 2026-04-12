@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hdpch.h"
+
 #include "Hydra/Core/Core.h"
 
 namespace Hydra
@@ -8,21 +9,10 @@ namespace Hydra
 	enum class EventType
 	{
 		None = 0,
-		WindowClose,
-		WindowResize,
-		WindowFocus,
-		WindowLostFocus,
-		WindowMoved,
-		AppTick,
-		AppUpdate,
-		AppRender,
-		KeyPressed,
-		KeyReleased,
-		KeyTyped,
-		MouseButtonPressed,
-		MouseButtonReleased,
-		MouseMoved,
-		MouseScrolled
+		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
+		AppTick, AppUpdate, AppRender,
+		KeyPressed, KeyReleased, KeyTyped,
+		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 
 	enum EventCategory
@@ -46,7 +36,7 @@ namespace Hydra
 	virtual int GetCategoryFlags() const override { return category; }
 
 	// =================== BASE EVENT ===================
-	class HYDRA_API Event
+	class Event
 	{
 		friend class EventDispatcher;
 

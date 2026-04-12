@@ -2,6 +2,8 @@
 
 // For use by Hydra applications
 
+#include "Hydra/Core/Core.h"
+
 #include "Hydra/Core/Application.h"
 #include "Hydra/Core/Layer.h"
 #include "Hydra/Core/Log.h"

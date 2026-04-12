@@ -3,9 +3,6 @@
 
 namespace Hydra
 {
-	LayerStack::LayerStack()
-	{
-	}
 
 	LayerStack::~LayerStack()
 	{

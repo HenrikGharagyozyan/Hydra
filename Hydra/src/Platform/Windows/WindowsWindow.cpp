@@ -13,17 +13,17 @@ namespace Hydra
 {
 	static uint8_t s_GLFWWindowCount = 0;
 
-	static void GLFWErrorCallback(int error, const char *description)
+	static void GLFWErrorCallback(int error, const char* description)
 	{
 		HD_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
-	Window *Window::Create(const WindowProps &props)
+	Scope<Window> Window::Create(const WindowProps& props)
 	{
-		return new WindowsWindow(props);
+		return CreateScope<WindowsWindow>(props);
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProps &props)
+	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
 		Init(props);
 	}
@@ -33,7 +33,7 @@ namespace Hydra
 		Shutdown();
 	}
 
-	void WindowsWindow::Init(const WindowProps &props)
+	void WindowsWindow::Init(const WindowProps& props)
 	{
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
@@ -52,15 +52,14 @@ namespace Hydra
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		++s_GLFWWindowCount;
 
-		m_Context = CreateScope<OpenGLContext>(m_Window);
-		
+		m_Context = GraphicsContext::Create(m_Window);
 		m_Context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
 		// Set GLFW callback
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow *window, int width, int height)
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				data.Width = width;
@@ -78,7 +77,7 @@ namespace Hydra
 				data.EventCallback(event); 
 			});
 
-		glfwSetKeyCallback(m_Window, [](GLFWwindow *window, int key, int scancode, int action, int mods)
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -105,7 +104,7 @@ namespace Hydra
 				} 
 			});
 
-		glfwSetCharCallback(m_Window, [](GLFWwindow *window, unsigned int keycode)
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -113,7 +112,7 @@ namespace Hydra
 				data.EventCallback(event);
 			});
 
-		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow *window, int button, int action, int mods)
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -134,7 +133,7 @@ namespace Hydra
 				} 
 			});
 
-		glfwSetScrollCallback(m_Window, [](GLFWwindow *window, double xOffset, double yOffset)
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -142,7 +141,7 @@ namespace Hydra
 				data.EventCallback(event); 
 			});
 
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow *window, double xPos, double yPos)
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 

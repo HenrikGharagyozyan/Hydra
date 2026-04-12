@@ -3,7 +3,7 @@
 
 #include "Platform/OpenGL/OpenGLShader.h"
 
-#include "imgui/imgui.h"
+#include <imgui/imgui.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -24,8 +24,7 @@ public:
 			 0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
 			 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f};
 
-		Hydra::Ref<Hydra::VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Hydra::VertexBuffer::Create(vertices, sizeof(vertices)));
+		Hydra::Ref<Hydra::VertexBuffer> vertexBuffer = Hydra::VertexBuffer::Create(vertices, sizeof(vertices));
 		Hydra::BufferLayout layout = {
 			{Hydra::ShaderDataType::Float3, "a_Position"},
 			{Hydra::ShaderDataType::Float4, "a_Color"},
@@ -35,8 +34,7 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		unsigned int indices[3] = {0, 1, 2};
-		Hydra::Ref<Hydra::IndexBuffer> indexBuffer;
-		indexBuffer.reset(Hydra::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		Hydra::Ref<Hydra::IndexBuffer> indexBuffer = Hydra::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		m_SquareVA = Hydra::VertexArray::Create();
@@ -48,8 +46,7 @@ public:
 			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
-		Hydra::Ref<Hydra::VertexBuffer> squareVB;
-		squareVB.reset(Hydra::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+		Hydra::Ref<Hydra::VertexBuffer> squareVB = Hydra::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 		squareVB->SetLayout({
 			{ Hydra::ShaderDataType::Float3, "a_Position" },
 			{ Hydra::ShaderDataType::Float2, "a_TexCoord" }
@@ -58,8 +55,7 @@ public:
 		m_SquareVA->AddVertexBuffer(squareVB);
 
 		unsigned int squareIndices[6] = {0, 1, 2, 2, 3, 0};
-		Hydra::Ref<Hydra::IndexBuffer> squareIB;
-		squareIB.reset(Hydra::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		Hydra::Ref<Hydra::IndexBuffer> squareIB = Hydra::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
 		std::string vertexSrc = R"(
@@ -138,8 +134,8 @@ public:
 		m_Texture = Hydra::Texture2D::Create("assets/textures/Checkerboard.png");
 		m_GoogleLogoTexture = Hydra::Texture2D::Create("assets/textures/Google.png");
 
-		std::dynamic_pointer_cast<Hydra::OpenGLShader>(textureShader)->Bind();
-		std::dynamic_pointer_cast<Hydra::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
+		textureShader->Bind();
+		textureShader->SetInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Hydra::Timestep ts) override
@@ -155,8 +151,8 @@ public:
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-		std::dynamic_pointer_cast<Hydra::OpenGLShader>(m_FlatColorShader)->Bind();
-		std::dynamic_pointer_cast<Hydra::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
+		m_FlatColorShader->Bind();
+		m_FlatColorShader->SetFloat3("u_Color", m_SquareColor);
 
 		for (int y = 0; y < 20; ++y)
 		{

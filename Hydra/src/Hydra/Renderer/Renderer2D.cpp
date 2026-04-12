@@ -32,8 +32,7 @@ namespace Hydra
                 -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
             };
 
-        Ref<Hydra::VertexBuffer> squareVB;
-        squareVB.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+        Ref<VertexBuffer> squareVB = VertexBuffer::Create(squareVertices, sizeof(squareVertices));
         squareVB->SetLayout({
             { ShaderDataType::Float3, "a_Position" },
             { ShaderDataType::Float2, "a_TexCoord" }
@@ -41,8 +40,7 @@ namespace Hydra
         s_Data->QuadVertexArray->AddVertexBuffer(squareVB);
 
         uint32_t squareIndices[6] = {0, 1, 2, 2, 3, 0};
-        Ref<IndexBuffer> squareIB;
-        squareIB.reset(Hydra::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+        Ref<IndexBuffer> squareIB = IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
         s_Data->QuadVertexArray->SetIndexBuffer(squareIB);
 
         s_Data->WhiteTexture = Texture2D::Create(1, 1);

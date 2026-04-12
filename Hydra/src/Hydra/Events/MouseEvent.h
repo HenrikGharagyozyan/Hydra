@@ -5,7 +5,7 @@
 namespace Hydra 
 {
 
-	class HYDRA_API MouseMovedEvent : public Event
+	class MouseMovedEvent : public Event
 	{
 	public:
 		MouseMovedEvent(float x, float y)
@@ -30,7 +30,7 @@ namespace Hydra
 		float m_MouseX, m_MouseY;
 	};
 
-	class HYDRA_API MouseScrolledEvent : public Event
+	class MouseScrolledEvent : public Event
 	{
 	public:
 		MouseScrolledEvent(float xOffset, float yOffset)
@@ -55,7 +55,7 @@ namespace Hydra
 		float m_XOffset, m_YOffset;
 	};
 
-	class HYDRA_API MouseButtonEvent : public Event
+	class MouseButtonEvent : public Event
 	{
 	public:
 		inline int GetMouseButton() const { return m_Button; }
@@ -70,7 +70,7 @@ namespace Hydra
 		int m_Button;
 	};
 
-	class HYDRA_API MouseButtonPressedEvent : public MouseButtonEvent
+	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonPressedEvent(int button)
@@ -88,7 +88,7 @@ namespace Hydra
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 	};
 
-	class HYDRA_API MouseButtonReleasedEvent : public MouseButtonEvent
+	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonReleasedEvent(int button)

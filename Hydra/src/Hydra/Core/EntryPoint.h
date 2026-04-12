@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Hydra/Core/Core.h"
+
+
 #ifdef HD_PLATFORM_WINDOWS
 
 extern Hydra::Application *Hydra::CreateApplication();
