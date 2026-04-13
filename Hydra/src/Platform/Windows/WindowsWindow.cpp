@@ -70,7 +70,7 @@ namespace Hydra
 				data.EventCallback(event); 
 			});
 
-		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow *window)
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				WindowCloseEvent event;
