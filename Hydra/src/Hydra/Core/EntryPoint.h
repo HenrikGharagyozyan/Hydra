@@ -29,13 +29,18 @@ extern Hydra::Application* Hydra::CreateApplication();
 int main(int argc, char **argv)
 {
 	Hydra::Log::Init();
-	HD_CORE_WARN("Initialized Log!");
-	int a = 5;
-	HD_CORE_INFO("Hello! Var = {0}", a);
 
+	HD_PROFILE_BEGIN_SESSION("Startup", "HydraProfile-Startup.json");
 	auto app = Hydra::CreateApplication();
+	HD_PROFILE_END_SESSION();
+
+	HD_PROFILE_BEGIN_SESSION("Runtime", "HydraProfile-Runtime.json");
 	app->Run();
+	HD_PROFILE_END_SESSION();
+
+	HD_PROFILE_BEGIN_SESSION("Shutdown", "HydraProfile-Shutdown.json");
 	delete app;
+	HD_PROFILE_END_SESSION();
 }
 
 #endif // HD_PLATFORM_LINUX

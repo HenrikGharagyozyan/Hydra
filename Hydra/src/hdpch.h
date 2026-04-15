@@ -16,6 +16,8 @@
 
 #include "Hydra/Core/Log.h"
 
+#include "Hydra/Debug/Instrumentor.h"
+
 #ifdef HD_PLATFORM_WINDOWS
 #include <Windows.h>
 #endif
