@@ -21,6 +21,8 @@ namespace Hydra
 
 	void ImGuiLayer::OnAttach()
 	{
+		HD_PROFILE_FUNCTION();
+
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -54,6 +56,8 @@ namespace Hydra
 
 	void ImGuiLayer::OnDetach()
 	{
+		HD_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -61,6 +65,8 @@ namespace Hydra
 
 	void ImGuiLayer::Begin()
 	{
+		HD_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -68,6 +74,8 @@ namespace Hydra
 
 	void ImGuiLayer::End()
 	{
+		HD_PROFILE_FUNCTION();
+		
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());

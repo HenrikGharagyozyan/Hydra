@@ -25,16 +25,22 @@ namespace Hydra
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
+		HD_PROFILE_FUNCTION();
+
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+		HD_PROFILE_FUNCTION();
+		
 		Shutdown();
 	}
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+		HD_PROFILE_FUNCTION();
+
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -43,15 +49,19 @@ namespace Hydra
 
 		if (s_GLFWWindowCount == 0)
 		{
-			HD_CORE_INFO("Initializing GLFW");
+			HD_PROFILE_SCOPE("glfwInit");
+
 			int success = glfwInit();
 			HD_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		HD_CORE_ASSERT(m_Window, "Could not create GLFW window!");
-		++s_GLFWWindowCount;
+		{
+			HD_PROFILE_SCOPE("glfwCreateWindow");
+			
+			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+			++s_GLFWWindowCount;
+		}
 
 		m_Context = GraphicsContext::Create(m_Window);
 		m_Context->Init();
@@ -153,6 +163,8 @@ namespace Hydra
 
 	void WindowsWindow::Shutdown()
 	{
+		HD_PROFILE_FUNCTION();
+
 		glfwDestroyWindow(m_Window);
 
 		if (--s_GLFWWindowCount == 0)
@@ -164,12 +176,16 @@ namespace Hydra
 
 	void WindowsWindow::OnUpdate()
 	{
+		HD_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
+		HD_PROFILE_FUNCTION();
+
 		if (enabled)
 			glfwSwapInterval(1);
 		else

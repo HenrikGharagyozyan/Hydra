@@ -11,6 +11,8 @@ namespace Hydra
 
     void Renderer::Init()
     {
+        HD_PROFILE_FUNCTION();
+        
         RenderCommand::Init();
         Renderer2D::Init();
     }

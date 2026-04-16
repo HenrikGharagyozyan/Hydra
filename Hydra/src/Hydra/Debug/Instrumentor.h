@@ -26,11 +26,12 @@ namespace Hydra
     {
     public:
         Instrumentor()
-            : m_CurrentSession(nullptr), m_ProfileCount(0)
+            : m_CurrentSession(nullptr)
+            , m_ProfileCount(0)
         {
         }
 
-        void BeginSession(const std::string &name, const std::string &filepath = "results.json")
+        void BeginSession(const std::string& name, const std::string& filepath = "results.json")
         {
             m_OutputStream.open(filepath);
             WriteHeader();
@@ -46,7 +47,7 @@ namespace Hydra
             m_ProfileCount = 0;
         }
 
-        void WriteProfile(const ProfileResult &result)
+        void WriteProfile(const ProfileResult& result)
         {
             if (m_ProfileCount++ > 0)
                 m_OutputStream << ",";
@@ -86,7 +87,7 @@ namespace Hydra
         }
 
     private:
-        InstrumentationSession *m_CurrentSession;
+        InstrumentationSession* m_CurrentSession;
         std::ofstream m_OutputStream;
         int m_ProfileCount;
     };
@@ -94,8 +95,9 @@ namespace Hydra
     class InstrumentationTimer
     {
     public:
-        InstrumentationTimer(const char *name)
-            : m_Name(name), m_Stopped(false)
+        InstrumentationTimer(const char* name)
+            : m_Name(name)
+            , m_Stopped(false)
         {
             m_StartTimepoint = std::chrono::high_resolution_clock::now();
         }
@@ -120,7 +122,7 @@ namespace Hydra
         }
 
     private:
-        const char *m_Name;
+        const char* m_Name;
         std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTimepoint;
         bool m_Stopped;
     };

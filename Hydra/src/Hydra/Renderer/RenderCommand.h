@@ -9,7 +9,7 @@ namespace Hydra
     {
     public:
         inline static void Init()
-        {
+        {            
             s_RendererAPI->Init();
         }
 

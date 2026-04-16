@@ -12,7 +12,7 @@
 namespace Hydra
 {
 
-    static GLenum ShaderTypeFromString(const std::string &type)
+    static GLenum ShaderTypeFromString(const std::string& type)
     {
         if (type == "vertex")
             return GL_VERTEX_SHADER;
@@ -23,8 +23,10 @@ namespace Hydra
         return 0;
     }
 
-    OpenGLShader::OpenGLShader(const std::string &filepath)
+    OpenGLShader::OpenGLShader(const std::string& filepath)
     {
+        HD_PROFILE_FUNCTION();
+        
         std::string source = ReadFile(filepath);
         auto shaderSources = PreProcess(source);
         Compile(shaderSources);
@@ -37,9 +39,11 @@ namespace Hydra
         m_Name = filepath.substr(lastSlash, count);
     }
 
-    OpenGLShader::OpenGLShader(const std::string &name, const std::string &vertexSrc, const std::string &fragmentSrc)
+    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
         : m_Name(name)
     {
+        HD_PROFILE_FUNCTION();
+
         std::unordered_map<GLenum, std::string> shaderSources;
         shaderSources[GL_VERTEX_SHADER] = vertexSrc;
         shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -51,8 +55,10 @@ namespace Hydra
         glDeleteProgram(m_RendererID);
     }
 
-    std::string Hydra::OpenGLShader::ReadFile(const std::string &filepath)
+    std::string Hydra::OpenGLShader::ReadFile(const std::string& filepath)
     {
+        HD_PROFILE_FUNCTION();
+
         std::string result;
         std::ifstream in(filepath, std::ios::in | std::ios::binary);
         if (in)
@@ -75,8 +81,10 @@ namespace Hydra
         return result;
     }
 
-    std::unordered_map<GLenum, std::string> Hydra::OpenGLShader::PreProcess(const std::string &source)
+    std::unordered_map<GLenum, std::string> Hydra::OpenGLShader::PreProcess(const std::string& source)
     {
+        HD_PROFILE_FUNCTION();
+        
         std::unordered_map<GLenum, std::string> shaderSources;
 
         const char *typeToken = "#type";
@@ -101,8 +109,10 @@ namespace Hydra
         return shaderSources;
     }
 
-    void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string> &shaderSources)
+    void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
     {
+        HD_PROFILE_FUNCTION();
+
         GLuint program = glCreateProgram();
         HD_CORE_ASSERT(shaderSources.size() <= 2, "We only support a single vertex shader and a single fragment shader for now!");
         std::array<GLuint, 2> glShaderIDs;
@@ -177,47 +187,59 @@ namespace Hydra
 
     void OpenGLShader::Bind() const
     {
+        HD_PROFILE_FUNCTION();
+
         glUseProgram(m_RendererID);
     }
 
     void OpenGLShader::Unbind() const
     {
+        HD_PROFILE_FUNCTION();
+
         glUseProgram(0);
     }
 
-    void OpenGLShader::SetInt(const std::string &name, int value)
+    void OpenGLShader::SetInt(const std::string& name, int value)
     {
+        HD_PROFILE_FUNCTION();
+
         UploadUniformInt(name, value);
     }
 
-    void OpenGLShader::SetFloat3(const std::string &name, const glm::vec3 &value)
+    void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
     {
+        HD_PROFILE_FUNCTION();
+
         UploadUniformFloat3(name, value);
     }
 
-    void OpenGLShader::SetFloat4(const std::string &name, const glm::vec4 &value)
+    void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
     {
+        HD_PROFILE_FUNCTION();
+
         UploadUniformFloat4(name, value);
     }
 
-    void OpenGLShader::SetMat4(const std::string &name, const glm::mat4 &value)
+    void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
     {
+        HD_PROFILE_FUNCTION();
+
         UploadUniformMat4(name, value);
     }
 
-    void OpenGLShader::UploadUniformInt(const std::string &name, int value)
+    void OpenGLShader::UploadUniformInt(const std::string& name, int value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform1i(location, value);
     }
 
-    void OpenGLShader::UploadUniformFloat(const std::string &name, float value)
+    void OpenGLShader::UploadUniformFloat(const std::string& name, float value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform1f(location, value);
     }
 
-    void OpenGLShader::UploadUniformFloat2(const std::string &name, const glm::vec2 &value)
+    void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform2f(location, value.x, value.y);
@@ -241,7 +263,7 @@ namespace Hydra
         glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
-    void OpenGLShader::UploadUniformMat4(const std::string &name, const glm::mat4 &matrix)
+    void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
