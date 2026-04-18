@@ -128,8 +128,22 @@ namespace Hydra
     };
 }
 
+
 #define HD_PROFILE 1
+
 #if HD_PROFILE
+    #if defined(__GNUC__) || defined(__clang__)
+        #define HD_FUNC_SIG __PRETTY_FUNCTION__
+    #elif defined(_MSC_VER)
+        #define HD_FUNC_SIG __FUNCSIG__
+    #elif defined(__cplusplus) && (__cplusplus >= 201103) // Фолбек на стандартный C++11
+        #define HD_FUNC_SIG __func__
+    #else
+        #define HD_FUNC_SIG "HD_FUNC_SIG unknown!"
+    #endif
+
+    #define HD_PROFILE_CONCAT_INNER(a, b) a##b
+    #define HD_PROFILE_CONCAT(a, b) HD_PROFILE_CONCAT_INNER(a, b)
 
     #define HD_PROFILE_BEGIN_SESSION(name, filepath) \
         ::Hydra::Instrumentor::Get().BeginSession(name, filepath)
@@ -138,15 +152,9 @@ namespace Hydra
         ::Hydra::Instrumentor::Get().EndSession()
 
     #define HD_PROFILE_SCOPE(name) \
-        ::Hydra::InstrumentationTimer timer##__LINE__(name)
+        ::Hydra::InstrumentationTimer HD_PROFILE_CONCAT(timer, __LINE__)(name)
 
-    #if defined(_MSC_VER)
-        #define HD_PROFILE_FUNCTION() HD_PROFILE_SCOPE(__FUNCSIG__)
-    #elif defined(__GNUC__) || defined(__clang__)
-        #define HD_PROFILE_FUNCTION() HD_PROFILE_SCOPE(__PRETTY_FUNCTION__)
-    #else
-        #define HD_PROFILE_FUNCTION() HD_PROFILE_SCOPE(__func__)
-    #endif
+    #define HD_PROFILE_FUNCTION() HD_PROFILE_SCOPE(HD_FUNC_SIG)
 
 #else
 
