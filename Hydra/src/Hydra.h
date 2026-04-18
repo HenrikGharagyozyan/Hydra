@@ -12,7 +12,7 @@
 
 #include "Hydra/Core/Input.h"
 #include "Hydra/Core/KeyCodes.h"
-#include "Hydra/Core/MouseButtonCodes.h"
+#include "Hydra/Core/MouseCodes.h"
 #include "Hydra/Renderer/OrthographicCameraController.h"
 
 #include "Hydra/ImGui/ImGuiLayer.h"

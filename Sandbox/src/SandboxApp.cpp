@@ -18,7 +18,7 @@ public:
 	}
 };
 
-Hydra::Application *Hydra::CreateApplication()
+Hydra::Application* Hydra::CreateApplication()
 {
 	return new Sandbox();
 }
