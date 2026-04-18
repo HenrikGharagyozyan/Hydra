@@ -8,10 +8,38 @@ namespace Hydra
 
 #define HD_PROFILE_RENDERER_FUNCTION()
 
+    void OpenGLMessageCallback(
+        unsigned source,
+        unsigned type,
+        unsigned id,
+        unsigned severity,
+        int length,
+        const char* message,
+        const void* userParam)
+    {
+        switch (severity)
+        {
+            case GL_DEBUG_SEVERITY_HIGH:          HD_CORE_CRITICAL(message); return;
+            case GL_DEBUG_SEVERITY_MEDIUM:        HD_CORE_ERROR(message); return;
+            case GL_DEBUG_SEVERITY_LOW:           HD_CORE_WARN(message); return;
+            case GL_DEBUG_SEVERITY_NOTIFICATION:  HD_CORE_TRACE(message);return;
+        }
+
+        HD_CORE_ASSERT(false, "Unknown severity level!");
+    }
+
     void OpenGLRendererAPI::Init()
     {
         HD_PROFILE_FUNCTION();
         
+    #ifdef HD_DEBUG
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(OpenGLMessageCallback, nullptr);
+
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+    #endif
+
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -38,4 +66,5 @@ namespace Hydra
         glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+    
 }
