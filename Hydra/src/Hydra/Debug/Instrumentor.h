@@ -80,7 +80,7 @@ namespace Hydra
             m_OutputStream.flush();
         }
 
-        static Instrumentor &Get()
+        static Instrumentor& Get()
         {
             static Instrumentor instance;
             return instance;
