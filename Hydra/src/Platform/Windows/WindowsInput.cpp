@@ -6,7 +6,6 @@
 
 namespace Hydra
 {
-	Scope<Input> Input::s_Instance = CreateScope<WindowsInput>();
 
 	bool WindowsInput::IsKeyPressedImpl(KeyCode key)
 	{
