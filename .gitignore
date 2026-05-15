@@ -24,6 +24,9 @@ Makefile
 *.vcxproj.filters
 *.vcxproj.user
 
+# Hydra files
+*.log
+
 # For Profile
 HydraProfile-Runtime.json
 HydraProfile-Shutdown.json
