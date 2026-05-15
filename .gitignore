@@ -24,3 +24,8 @@ Makefile
 *.vcxproj.filters
 *.vcxproj.user
 
+# For Profile
+HydraProfile-Runtime.json
+HydraProfile-Shutdown.json
+HydraProfile-Startup.json
+
