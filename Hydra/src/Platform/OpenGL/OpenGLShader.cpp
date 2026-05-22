@@ -117,27 +117,27 @@ namespace Hydra
         HD_CORE_ASSERT(shaderSources.size() <= 2, "We only support a single vertex shader and a single fragment shader for now!");
         std::array<GLuint, 2> glShaderIDs;
         int glShaderIDIndex = 0;
-        for (auto &kv : shaderSources)
+        for (auto& kv : shaderSources)
         {
             GLenum type = kv.first;
-            const std::string &source = kv.second;
+            const std::string& source = kv.second;
 
             GLuint shader = glCreateShader(type);
 
             const GLchar *sourceCStr = source.c_str();
-            glShaderSource(shader, 1, &sourceCStr, 0);
+            glShaderSource(shader, 1,& sourceCStr, 0);
 
             glCompileShader(shader);
 
             GLint isCompiled = 0;
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+            glGetShaderiv(shader, GL_COMPILE_STATUS,& isCompiled);
             if (isCompiled == GL_FALSE)
             {
                 GLint maxLength = 0;
-                glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+                glGetShaderiv(shader, GL_INFO_LOG_LENGTH,& maxLength);
 
                 std::vector<GLchar> infoLog(maxLength);
-                glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+                glGetShaderInfoLog(shader, maxLength,& maxLength,& infoLog[0]);
 
                 glDeleteShader(shader);
 
@@ -159,11 +159,11 @@ namespace Hydra
         if (isLinked == GL_FALSE)
         {
             GLint maxLength = 0;
-            glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+            glGetProgramiv(program, GL_INFO_LOG_LENGTH,& maxLength);
 
             // The maxLength includes the NULL character
             std::vector<GLchar> infoLog(maxLength);
-            glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+            glGetProgramInfoLog(program, maxLength,& maxLength,& infoLog[0]);
 
             // We don't need the program anymore.
             glDeleteProgram(program);
@@ -206,7 +206,14 @@ namespace Hydra
         UploadUniformInt(name, value);
     }
 
-    void OpenGLShader::SetFloat(const std::string &name, float value)
+    void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count)
+    {
+        HD_PROFILE_FUNCTION();
+
+        UploadUniformIntArray(name, values, count);
+    }
+
+    void OpenGLShader::SetFloat(const std::string& name, float value)
     {
         HD_PROFILE_FUNCTION();
 
@@ -240,6 +247,12 @@ namespace Hydra
         glUniform1i(location, value);
     }
 
+    void OpenGLShader::UploadUniformIntArray(const std::string &name, int *values, uint32_t count)
+    {
+        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        glUniform1iv(location, count, values);
+    }
+
     void OpenGLShader::UploadUniformFloat(const std::string& name, float value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
@@ -252,19 +265,19 @@ namespace Hydra
         glUniform2f(location, value.x, value.y);
     }
 
-    void OpenGLShader::UploadUniformFloat3(const std::string &name, const glm::vec3 &value)
+    void OpenGLShader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform3f(location, value.x, value.y, value.z);
     }
 
-    void OpenGLShader::UploadUniformFloat4(const std::string &name, const glm::vec4 &value)
+    void OpenGLShader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform4f(location, value.x, value.y, value.z, value.w);
     }
 
-    void OpenGLShader::UploadUniformMat3(const std::string &name, const glm::mat3 &matrix)
+    void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
