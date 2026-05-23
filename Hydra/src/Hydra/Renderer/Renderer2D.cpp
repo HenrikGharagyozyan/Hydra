@@ -32,8 +32,8 @@ namespace Hydra
         Ref<Texture2D> WhiteTexture;
 
         uint32_t QuadIndexCount = 0;
-        QuadVertex *QuadVertexBufferBase = nullptr;
-        QuadVertex *QuadVertexBufferPtr = nullptr;
+        QuadVertex* QuadVertexBufferBase = nullptr;
+        QuadVertex* QuadVertexBufferPtr = nullptr;
 
         std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
         uint32_t TextureSlotIndex = 1; // 0 = white texture
@@ -63,7 +63,7 @@ namespace Hydra
 
         s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
 
-        uint32_t *quadIndices = new uint32_t[s_Data.MaxIndices];
+        uint32_t* quadIndices = new uint32_t[s_Data.MaxIndices];
 
         uint32_t offset = 0;
         for (uint32_t i = 0; i < s_Data.MaxIndices; i += 6)
@@ -124,7 +124,7 @@ namespace Hydra
     {
         HD_PROFILE_FUNCTION();
 
-        uint32_t dataSize = (uint8_t *)s_Data.QuadVertexBufferPtr - (uint8_t *)s_Data.QuadVertexBufferBase;
+        uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
         s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
 
         Flush();
@@ -313,7 +313,7 @@ namespace Hydra
         {
             if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
 				FlushAndReset();
-                
+
             textureIndex = (float)s_Data.TextureSlotIndex;
             s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
             ++s_Data.TextureSlotIndex;
