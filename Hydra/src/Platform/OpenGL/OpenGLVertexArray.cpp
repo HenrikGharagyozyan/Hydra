@@ -42,14 +42,14 @@ namespace Hydra
     {
         HD_PROFILE_FUNCTION();
 
-        glCreateVertexArrays(1, &m_RendererID);
+        glCreateVertexArrays(1,& m_RendererID);
     }
 
     OpenGLVertexArray::~OpenGLVertexArray()
     {
         HD_PROFILE_FUNCTION();
 
-        glDeleteVertexArrays(1, &m_RendererID);
+        glDeleteVertexArrays(1,& m_RendererID);
     }
 
     void OpenGLVertexArray::Bind() const
@@ -66,7 +66,7 @@ namespace Hydra
         glBindVertexArray(0);
     }
 
-    void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer> &vertexBuffer)
+    void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
     {
         HD_PROFILE_FUNCTION();
 
@@ -75,23 +75,60 @@ namespace Hydra
         glBindVertexArray(m_RendererID);
         vertexBuffer->Bind();
 
-        const auto &layout = vertexBuffer->GetLayout();
-        for (const auto &element : vertexBuffer->GetLayout())
+        const auto& layout = vertexBuffer->GetLayout();
+        for (const auto& element : vertexBuffer->GetLayout())
         {
-            glEnableVertexAttribArray(m_VertexBufferIndex);
-            glVertexAttribPointer(m_VertexBufferIndex,
-                                  element.GetComponentCount(),
-                                  ShaderDataTypeToOpenGLBaseType(element.Type),
-                                  element.Normalized ? GL_TRUE : GL_FALSE,
-                                  layout.GetStride(),
-                                  (const void *)element.Offset);
-            ++m_VertexBufferIndex;
+            switch (element.Type)
+			{
+				case ShaderDataType::Float:
+				case ShaderDataType::Float2:
+				case ShaderDataType::Float3:
+				case ShaderDataType::Float4:
+				case ShaderDataType::Int:
+				case ShaderDataType::Int2:
+				case ShaderDataType::Int3:
+				case ShaderDataType::Int4:
+				case ShaderDataType::Bool:
+				{
+					glEnableVertexAttribArray(m_VertexBufferIndex);
+					glVertexAttribPointer(m_VertexBufferIndex,
+						element.GetComponentCount(),
+						ShaderDataTypeToOpenGLBaseType(element.Type),
+						element.Normalized ? GL_TRUE : GL_FALSE,
+						layout.GetStride(),
+						(const void*)element.Offset
+                    );
+					++m_VertexBufferIndex;
+					break;
+				}
+				case ShaderDataType::Mat3:
+				case ShaderDataType::Mat4:
+				{
+					uint8_t count = element.GetComponentCount();
+					for (uint8_t i = 0; i < count; ++i)
+					{
+						glEnableVertexAttribArray(m_VertexBufferIndex);
+						glVertexAttribPointer(m_VertexBufferIndex,
+                                count,
+                                ShaderDataTypeToOpenGLBaseType(element.Type),
+                                element.Normalized ? GL_TRUE : GL_FALSE,
+                                layout.GetStride(),
+                                (const void*)(sizeof(float) * count * i)
+                            );
+						glVertexAttribDivisor(m_VertexBufferIndex, 1);
+						++m_VertexBufferIndex;
+					}
+					break;
+				}
+				default:
+					HD_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			}
         }
 
         m_VertexBuffers.push_back(vertexBuffer);
     }
 
-    void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer> &indexBuffer)
+    void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
     {
         HD_PROFILE_FUNCTION();
 
@@ -100,4 +137,5 @@ namespace Hydra
 
         m_IndexBuffer = indexBuffer;
     }
+    
 }
