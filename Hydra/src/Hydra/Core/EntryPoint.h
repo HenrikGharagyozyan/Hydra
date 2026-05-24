@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hydra/Core/Core.h"
+#include "Hydra/Core/Base.h"
 
 
 #ifdef HD_PLATFORM_WINDOWS

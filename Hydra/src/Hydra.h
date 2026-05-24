@@ -2,7 +2,7 @@
 
 // For use by Hydra applications
 
-#include "Hydra/Core/Core.h"
+#include "Hydra/Core/Base.h"
 
 #include "Hydra/Core/Application.h"
 #include "Hydra/Core/Layer.h"

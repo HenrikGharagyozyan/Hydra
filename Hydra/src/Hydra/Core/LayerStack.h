@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hydra/Core/Core.h"
+#include "Hydra/Core/Base.h"
 #include "Layer.h"
 
 #include <vector>

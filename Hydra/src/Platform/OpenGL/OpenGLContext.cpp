@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-#include <Hydra/Core/Core.h>
+#include <Hydra/Core/Base.h>
 
 namespace Hydra
 {
