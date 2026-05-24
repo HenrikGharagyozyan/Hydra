@@ -70,14 +70,11 @@ namespace Hydra
         {
             std::stringstream json;
 
-			std::string name = result.Name;
-			std::replace(name.begin(), name.end(), '"', '\'');
-
             json << std::setprecision(3) << std::fixed;
 			json << ",{";
 			json << "\"cat\":\"function\",";
 			json << "\"dur\":" << (result.ElapsedTime.count()) << ',';
-			json << "\"name\":\"" << name << "\",";
+			json << "\"name\":\"" << result.Name << "\",";
 			json << "\"ph\":\"X\",";
 			json << "\"pid\":0,";
 			json << "\"tid\":" << result.ThreadID << ",";
@@ -165,6 +162,39 @@ namespace Hydra
         std::chrono::time_point<std::chrono::steady_clock> m_StartTimepoint;
         bool m_Stopped;
     };
+
+
+    namespace InstrumentorUtils
+    {
+
+        template<size_t N>
+        struct ChangeResult
+        {
+            char Data[N];
+        };
+
+        template<size_t N, size_t K>
+        constexpr auto CleanupOutputString(const char(&expr)[N], const char(&remove)[K])
+        {
+            ChangeResult<N> result = {};
+
+            size_t srcIndex = 0;
+            size_t dstIndex = 0;
+            while (srcIndex < N)
+            {
+                size_t matchIndex = 0;
+                while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 && expr[srcIndex + matchIndex] == remove[matchIndex])
+                    matchIndex++;
+                if (matchIndex == K - 1)
+                    srcIndex += matchIndex;
+                result.Data[dstIndex++] = expr[srcIndex] == '"' ? '\'' : expr[srcIndex];
+                srcIndex++;
+            }
+            return result;
+        }
+
+    }
+
 }
 
 
@@ -175,23 +205,28 @@ namespace Hydra
         #define HD_FUNC_SIG __PRETTY_FUNCTION__
     #elif defined(_MSC_VER)
         #define HD_FUNC_SIG __FUNCSIG__
-    #elif defined(__cplusplus) && (__cplusplus >= 201103) // Фолбек на стандартный C++11
+    #elif defined(__cplusplus) && (__cplusplus >= 201103L)
         #define HD_FUNC_SIG __func__
     #else
         #define HD_FUNC_SIG "HD_FUNC_SIG unknown!"
     #endif
 
+
     #define HD_PROFILE_CONCAT_INNER(a, b) a##b
     #define HD_PROFILE_CONCAT(a, b) HD_PROFILE_CONCAT_INNER(a, b)
 
+
     #define HD_PROFILE_BEGIN_SESSION(name, filepath) \
-        ::Hydra::Instrumentor::Get().BeginSession(name, filepath)
+        do { ::Hydra::Instrumentor::Get().BeginSession(name, filepath); } while(0)
 
     #define HD_PROFILE_END_SESSION() \
-        ::Hydra::Instrumentor::Get().EndSession()
+        do { ::Hydra::Instrumentor::Get().EndSession(); } while(0)
 
-    #define HD_PROFILE_SCOPE(name) \
-        ::Hydra::InstrumentationTimer HD_PROFILE_CONCAT(timer, __LINE__)(name)
+
+        #define HD_PROFILE_SCOPE(name) \
+            constexpr auto HD_PROFILE_CONCAT(fixedName, __LINE__) = ::Hydra::InstrumentorUtils::CleanupOutputString(name, "__cdecl "); \
+            ::Hydra::InstrumentationTimer HD_PROFILE_CONCAT(timer, __LINE__)(HD_PROFILE_CONCAT(fixedName, __LINE__).Data)
+
 
     #define HD_PROFILE_FUNCTION() HD_PROFILE_SCOPE(HD_FUNC_SIG)
 
