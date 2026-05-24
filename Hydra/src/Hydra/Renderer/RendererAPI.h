@@ -7,6 +7,7 @@
 
 namespace Hydra
 {
+    
     class RendererAPI
     {
     public:
@@ -30,4 +31,5 @@ namespace Hydra
     private:
         static API s_API;
     };
+
 }

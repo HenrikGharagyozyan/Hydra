@@ -46,4 +46,5 @@ namespace Hydra
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray);
     }
+    
 }
