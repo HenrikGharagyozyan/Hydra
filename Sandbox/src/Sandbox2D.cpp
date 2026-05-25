@@ -20,6 +20,11 @@ void Sandbox2D::OnAttach()
     HD_PROFILE_FUNCTION();
 
     m_CheckerboardTexture = Hydra::Texture2D::Create("assets/textures/Checkerboard.png");
+
+	Hydra::FramebufferSpecification fbSpec;
+	fbSpec.Width = 1280;
+	fbSpec.Height = 720;
+	m_Framebuffer = Hydra::Framebuffer::Create(fbSpec);
 }
 
 void Sandbox2D::OnDetach()
@@ -39,6 +44,7 @@ void Sandbox2D::OnUpdate(Hydra::Timestep ts)
     Hydra::Renderer2D::ResetStats(); 
     {
         HD_PROFILE_SCOPE("Renderer Prep");
+		m_Framebuffer->Bind();
         Hydra::RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
         Hydra::RenderCommand::Clear();
     }
@@ -66,6 +72,7 @@ void Sandbox2D::OnUpdate(Hydra::Timestep ts)
             }
         }
         Hydra::Renderer2D::EndScene();
+		m_Framebuffer->Unbind();
     }
 }
 
@@ -74,7 +81,7 @@ void Sandbox2D::OnImGuiRender()
 	HD_PROFILE_FUNCTION();
 
 	// Note: Switch this to true to enable dockspace
-	static bool dockingEnabled = false;
+	static bool dockingEnabled = true;
 	if (dockingEnabled)
 	{
 		static bool dockspaceOpen = true;
@@ -148,8 +155,8 @@ void Sandbox2D::OnImGuiRender()
 
 		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
 
-		uint32_t textureID = m_CheckerboardTexture->GetRendererID();
-		ImGui::Image((void*)textureID, ImVec2{ 256.0f, 256.0f });
+		uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+		ImGui::Image((void*)textureID, ImVec2{ 1280.0f, 720.0f });
 		ImGui::End();
 
 		ImGui::End();
@@ -168,7 +175,7 @@ void Sandbox2D::OnImGuiRender()
 		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
 
 		uint32_t textureID = m_CheckerboardTexture->GetRendererID();
-		ImGui::Image((void*)textureID, ImVec2{ 256.0f, 256.0f });
+		ImGui::Image((void*)textureID, ImVec2{ 1280.0f, 720.0f });
 		ImGui::End();
 	}
 }

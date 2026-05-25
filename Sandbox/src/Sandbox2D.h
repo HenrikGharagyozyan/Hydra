@@ -21,6 +21,7 @@ private:
     // Temp
     Hydra::Ref<Hydra::VertexArray> m_SquareVA;
     Hydra::Ref<Hydra::Shader> m_FlatColorShader;
+    Hydra::Ref<Hydra::Framebuffer> m_Framebuffer;
 
     Hydra::Ref<Hydra::Texture2D> m_CheckerboardTexture;
 

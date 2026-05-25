@@ -24,6 +24,7 @@
 
 #include "Hydra/Renderer/Buffer.h"
 #include "Hydra/Renderer/Shader.h"
+#include "Hydra/Renderer/Framebuffer.h"
 #include "Hydra/Renderer/Texture.h"
 #include "Hydra/Renderer/VertexArray.h"
 
