@@ -27,6 +27,8 @@ namespace Hydra
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
+
+		void Close();
 		
 		Window& GetWindow() { return *m_Window; }
 

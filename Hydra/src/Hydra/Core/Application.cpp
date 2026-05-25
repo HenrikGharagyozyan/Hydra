@@ -52,7 +52,12 @@ namespace Hydra
 		layer->OnAttach();
 	}
 
-	void Application::OnEvent(Event& e)
+    void Application::Close()
+    {
+		m_Running = false;
+    }
+
+    void Application::OnEvent(Event& e)
 	{
 		HD_PROFILE_FUNCTION();
 
