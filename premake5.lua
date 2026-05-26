@@ -1,6 +1,6 @@
 workspace "Hydra"
 	architecture "x86_64"
-	startproject "Sandbox"
+	startproject "Hydra-Editor"
 
 	configurations
 	{
@@ -120,12 +120,83 @@ project "Hydra"
 		optimize "on"
 
 
+
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs
+	{
+		"Hydra/vendor/spdlog/include",
+		"Hydra/src",
+		"Hydra/vendor",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
+	}
+
+	links
+	{
+		"Hydra",
+		"GLFW",
+		"Glad",
+		"ImGui"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+		links
+		{
+			"opengl32.lib"
+		}
+
+	filter "system:linux"
+		links
+		{
+			"GL",
+			"pthread",
+			"dl",
+			"X11"
+		}
+
+	filter "configurations:Debug"
+		defines "HD_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "HD_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:Dist"
+		defines "HD_DIST"
+		runtime "Release"
+		optimize "on"
+		
+
+
+project "Hydra-Editor"
+	location "Hydra-Editor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	debugdir "Hydra-Editor"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")

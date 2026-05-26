@@ -20,7 +20,7 @@ namespace Hydra
 	class Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "Hydra App");
 		virtual ~Application();
 
 		void OnEvent(Event& e);
