@@ -20,7 +20,7 @@ namespace Hydra
 		}
 	};
 
-	Application *CreateApplication()
+	Application* CreateApplication()
 	{
 		return new HydraEditor();
 	}

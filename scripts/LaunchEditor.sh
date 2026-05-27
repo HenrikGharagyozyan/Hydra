@@ -14,10 +14,10 @@ fi
 echo "=== Starting Hydra Editor ==="
 
 # Заходим в рабочую директорию редактора для корректных путей к ассетам
-pushd Hydra-Editor > /dev/null
+pushd HydraEditor > /dev/null
 
 # Запускаем редактор
-./../bin/Debug-linux-x86_64/Hydra-Editor/Hydra-Editor
+./../bin/Debug-linux-x86_64/HydraEditor/HydraEditor
 
 popd > /dev/null
 

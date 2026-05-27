@@ -1,6 +1,6 @@
 workspace "Hydra"
 	architecture "x86_64"
-	startproject "Hydra-Editor"
+	startproject "HydraEditor"
 
 	configurations
 	{
@@ -189,8 +189,8 @@ project "Sandbox"
 		
 
 
-project "Hydra-Editor"
-	location "Hydra-Editor"
+project "HydraEditor"
+	location "HydraEditor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
