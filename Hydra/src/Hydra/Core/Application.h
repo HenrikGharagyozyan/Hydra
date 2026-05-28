@@ -29,6 +29,8 @@ namespace Hydra
 		void PushOverlay(Layer* layer);
 
 		void Close();
+
+		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 		
 		Window& GetWindow() { return *m_Window; }
 
