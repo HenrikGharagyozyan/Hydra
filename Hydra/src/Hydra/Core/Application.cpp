@@ -11,9 +11,9 @@
 
 namespace Hydra
 {
-	Application* Application::s_Instance = nullptr;
+	Application *Application::s_Instance = nullptr;
 
-	Application::Application(const std::string& name)
+	Application::Application(const std::string &name)
 	{
 		HD_PROFILE_FUNCTION();
 
@@ -36,7 +36,7 @@ namespace Hydra
 		Renderer::Shutdown();
 	}
 
-	void Application::PushLayer(Layer* layer)
+	void Application::PushLayer(Layer *layer)
 	{
 		HD_PROFILE_FUNCTION();
 
@@ -44,7 +44,7 @@ namespace Hydra
 		layer->OnAttach();
 	}
 
-	void Application::PushOverlay(Layer* layer)
+	void Application::PushOverlay(Layer *layer)
 	{
 		HD_PROFILE_FUNCTION();
 
@@ -52,12 +52,12 @@ namespace Hydra
 		layer->OnAttach();
 	}
 
-    void Application::Close()
-    {
+	void Application::Close()
+	{
 		m_Running = false;
-    }
+	}
 
-    void Application::OnEvent(Event& e)
+	void Application::OnEvent(Event &e)
 	{
 		HD_PROFILE_FUNCTION();
 
@@ -68,7 +68,7 @@ namespace Hydra
 		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
 		{
 			if (e.Handled)
-				break;	
+				break;
 			(*it)->OnEvent(e);
 		}
 	}
@@ -89,8 +89,8 @@ namespace Hydra
 			{
 				{
 					HD_PROFILE_SCOPE("LayerStack OnUpdate");
-					
-					for (Layer* layer : m_LayerStack)
+
+					for (Layer *layer : m_LayerStack)
 						layer->OnUpdate(timestep);
 				}
 
@@ -98,7 +98,7 @@ namespace Hydra
 				{
 					HD_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
-					for (Layer* layer : m_LayerStack)
+					for (Layer *layer : m_LayerStack)
 						layer->OnImGuiRender();
 				}
 				m_ImGuiLayer->End();
@@ -108,27 +108,27 @@ namespace Hydra
 		}
 	}
 
-	bool Application::OnWindowClose(WindowCloseEvent& e)
+	bool Application::OnWindowClose(WindowCloseEvent &e)
 	{
-		
+
 		m_Running = false;
 		return true;
 	}
 
-	bool Application::OnWindowResize(WindowResizeEvent& e)
+	bool Application::OnWindowResize(WindowResizeEvent &e)
 	{
 		HD_PROFILE_FUNCTION();
-		
+
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_Minimized = true;
 			return false;
 		}
-		
+
 		m_Minimized = false;
 		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
 		return false;
 	}
-	
+
 }

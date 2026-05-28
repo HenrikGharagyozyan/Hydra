@@ -34,13 +34,13 @@
 // ================= DLL EXPORT / IMPORT =================
 #ifdef HD_DYNAMIC_LINK
     #ifdef HD_PLATFORM_WINDOWS
-        #ifdef HZ_BUILD_DLL
+        #ifdef HD_BUILD_DLL
             #define HYDRA_API __declspec(dllexport)
         #else
             #define HYDRA_API __declspec(dllimport)
         #endif
     #elif defined(HD_PLATFORM_LINUX)
-        #ifdef HZ_BUILD_DLL
+        #ifdef HD_BUILD_DLL
             #define HYDRA_API __attribute__((visibility("default")))
         #else
             #define HYDRA_API
@@ -66,6 +66,7 @@
     #define HD_DEBUGBREAK()
 #endif
 
+// TODO:  Make this macro able to take in no arguments except condition
 #ifdef HD_ENABLE_ASSERTS
     #define HD_ASSERT(x, ...) { if(!(x)) { HD_ERROR("Assertion Failed: {0}", __VA_ARGS__); HD_DEBUGBREAK(); } }
     #define HD_CORE_ASSERT(x, ...) { if(!(x)) { HD_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); HD_DEBUGBREAK(); } }
@@ -74,8 +75,10 @@
     #define HD_CORE_ASSERT(x, ...)
 #endif
 
+
 // ================= HELPERS =================
 #define BIT(x) (1 << x)
+
 #define HD_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 namespace Hydra 
