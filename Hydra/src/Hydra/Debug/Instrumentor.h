@@ -28,10 +28,8 @@ namespace Hydra
     class Instrumentor
     {
     public:
-        Instrumentor()
-            : m_CurrentSession(nullptr)
-        {
-        }
+        Instrumentor(const Instrumentor&) = delete;
+		Instrumentor(Instrumentor&&) = delete;
 
         void BeginSession(const std::string& name, const std::string& filepath = "results.json")
         {
@@ -96,6 +94,17 @@ namespace Hydra
         }
 
     private:
+        Instrumentor()
+            : m_CurrentSession(nullptr)
+        {
+        }
+
+        ~Instrumentor()
+        {
+            EndSession();
+        }
+
+
         void WriteHeader()
         {
             m_OutputStream << "{\"otherData\": {},\"traceEvents\":[";
@@ -223,9 +232,9 @@ namespace Hydra
         do { ::Hydra::Instrumentor::Get().EndSession(); } while(0)
 
 
-        #define HD_PROFILE_SCOPE(name) \
-            constexpr auto HD_PROFILE_CONCAT(fixedName, __LINE__) = ::Hydra::InstrumentorUtils::CleanupOutputString(name, "__cdecl "); \
-            ::Hydra::InstrumentationTimer HD_PROFILE_CONCAT(timer, __LINE__)(HD_PROFILE_CONCAT(fixedName, __LINE__).Data)
+    #define HD_PROFILE_SCOPE(name) \
+        constexpr auto HD_PROFILE_CONCAT(fixedName, __LINE__) = ::Hydra::InstrumentorUtils::CleanupOutputString(name, "__cdecl "); \
+        ::Hydra::InstrumentationTimer HD_PROFILE_CONCAT(timer, __LINE__)(HD_PROFILE_CONCAT(fixedName, __LINE__).Data)
 
 
     #define HD_PROFILE_FUNCTION() HD_PROFILE_SCOPE(HD_FUNC_SIG)
