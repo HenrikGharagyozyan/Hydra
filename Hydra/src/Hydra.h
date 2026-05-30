@@ -18,6 +18,7 @@
 #include "Hydra/ImGui/ImGuiLayer.h"
 
 #include "Hydra/Scene/Scene.h"
+#include "Hydra/Scene/Entity.h"
 #include "Hydra/Scene/Components.h"
 
 //---------Renderer----------------

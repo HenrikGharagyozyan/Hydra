@@ -1,11 +1,13 @@
 #pragma once
 
-#include "entt.hpp"
+#include <entt.hpp>
 
 #include "Hydra/Core/Timestep.h"
 
 namespace Hydra
 {
+
+    class Entity;
 
     class Scene
     {
@@ -13,15 +15,14 @@ namespace Hydra
         Scene();
         ~Scene();
 
-        entt::entity CreateEntity();
-
-        // TEMP
-        entt::registry &Reg() { return m_Registry; }
+        Entity CreateEntity(const std::string& name = std::string());
 
         void OnUpdate(Timestep ts);
 
     private:
         entt::registry m_Registry;
+
+        friend class Entity;
     };
 
 }
