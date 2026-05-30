@@ -8,7 +8,7 @@ workspace "Hydra"
 		"Release",
 		"Dist"
 	}
-
+	
 	flags
 	{
 		"MultiProcessorCompile"
@@ -23,14 +23,13 @@ IncludeDir["Glad"] = "Hydra/vendor/Glad/include"
 IncludeDir["ImGui"] = "Hydra/vendor/imgui"
 IncludeDir["glm"] = "Hydra/vendor/glm"
 IncludeDir["stb_image"] = "Hydra/vendor/stb_image"
-
+IncludeDir["entt"] = "Hydra/vendor/entt/include"
 
 group "Dependencies"
 	include "Hydra/vendor/GLFW"
 	include "Hydra/vendor/Glad"
 	include "Hydra/vendor/imgui"
 group ""
-
 
 project "Hydra"
 	location "Hydra"
@@ -43,7 +42,7 @@ project "Hydra"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "hdpch.h"
-	pchsource "src/hdpch.cpp"
+	pchsource "Hydra/src/hdpch.cpp"
 
 	files
 	{
@@ -69,7 +68,8 @@ project "Hydra"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}"
 	}
 
 	links 
@@ -97,12 +97,6 @@ project "Hydra"
 			"dl",
 			"X11"
 		}
-		defines
-		{
-			"HD_DYNAMIC_LINK",
-			"HD_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
-		}
 
 	filter "configurations:Debug"
 		defines "HD_DEBUG"
@@ -118,7 +112,6 @@ project "Hydra"
 		defines "HD_DIST"
 		runtime "Release"
 		optimize "on"
-
 
 
 project "Sandbox"
@@ -142,10 +135,8 @@ project "Sandbox"
 		"Hydra/vendor/spdlog/include",
 		"Hydra/src",
 		"Hydra/vendor",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -162,7 +153,7 @@ project "Sandbox"
 		{
 			"opengl32.lib"
 		}
-
+		
 	filter "system:linux"
 		links
 		{
@@ -186,7 +177,6 @@ project "Sandbox"
 		defines "HD_DIST"
 		runtime "Release"
 		optimize "on"
-		
 
 
 project "HydraEditor"
@@ -195,8 +185,6 @@ project "HydraEditor"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
-
-	debugdir "Hydra-Editor"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -212,10 +200,8 @@ project "HydraEditor"
 		"Hydra/vendor/spdlog/include",
 		"Hydra/src",
 		"Hydra/vendor",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -232,7 +218,7 @@ project "HydraEditor"
 		{
 			"opengl32.lib"
 		}
-
+		
 	filter "system:linux"
 		links
 		{
