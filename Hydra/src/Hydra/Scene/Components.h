@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "Hydra/Renderer/Camera.h"
+
 namespace Hydra
 {
 
@@ -45,5 +47,20 @@ namespace Hydra
         {
         }
     };
+
+
+    struct CameraComponent
+    {
+        Hydra::Camera Camera;
+        bool Primary = true; // TODO: think about moving to Scene
+
+        CameraComponent() = default;
+        CameraComponent(const CameraComponent&) = default; 
+        CameraComponent(const glm::mat4& projection)
+            : Camera(projection)
+        {
+        }
+    };
+
 
 }
