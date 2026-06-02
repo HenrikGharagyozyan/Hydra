@@ -1,7 +1,8 @@
 #pragma once
 
-#include "hdpch.h"
+#include <functional>
 
+#include "Hydra/Debug/Instrumentor.h"
 #include "Hydra/Core/Base.h"
 
 namespace Hydra

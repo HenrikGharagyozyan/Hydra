@@ -94,12 +94,13 @@ namespace Hydra
         s_Data.TextureShader->Bind();
         s_Data.TextureShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
 
+        // Set first texture slot to 0
         s_Data.TextureSlots[0] = s_Data.WhiteTexture;
 
         s_Data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
-        s_Data.QuadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
-        s_Data.QuadVertexPositions[2] = { 0.5f, 0.5f, 0.0f, 1.0f };
-        s_Data.QuadVertexPositions[3] = { -0.5f, 0.5f, 0.0f, 1.0f };
+        s_Data.QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
+        s_Data.QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
+        s_Data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
     }
 
     void Renderer2D::Shutdown()
@@ -183,7 +184,7 @@ namespace Hydra
         HD_PROFILE_FUNCTION();
 
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) 
-                                    * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1 });
+                                    * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
         
         DrawQuad(transform, color);
     }
@@ -198,7 +199,7 @@ namespace Hydra
         HD_PROFILE_FUNCTION();
 
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) 
-                                    * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1});
+                                    * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 
         DrawQuad(transform, texture, tilingFactor, tintColor);
     }
@@ -244,7 +245,7 @@ namespace Hydra
 
         for (uint32_t i = 1; i < s_Data.TextureSlotIndex; ++i)
         {
-            if (*s_Data.TextureSlots[i].get() == *texture.get())
+            if (*s_Data.TextureSlots[i] == *texture)
             {
                 textureIndex = (float)i;
                 break;
@@ -287,7 +288,7 @@ namespace Hydra
 
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) 
                                     * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) 
-                                    * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1});
+                                    * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 
         DrawQuad(transform, color);
     }
@@ -303,7 +304,7 @@ namespace Hydra
 
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) 
                                     * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) 
-                                    * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1});
+                                    * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 
         DrawQuad(transform, texture, tilingFactor, tintColor);
     }

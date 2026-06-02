@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Hydra/Core/Base.h"
+#include <glm/glm.hpp>
+
 #include "Hydra/Core/KeyCodes.h"
 #include "Hydra/Core/MouseCodes.h"
 
@@ -14,7 +15,7 @@ namespace Hydra
 		static bool IsKeyPressed(KeyCode key);
 
 		static bool IsMouseButtonPressed(MouseCode button);
-		static std::pair<float, float> GetMousePosition();
+		static glm::vec2 GetMousePosition();
 		static float GetMouseX();
 		static float GetMouseY();
 	};

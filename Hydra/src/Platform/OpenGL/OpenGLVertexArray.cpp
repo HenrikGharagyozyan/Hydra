@@ -42,14 +42,14 @@ namespace Hydra
     {
         HD_PROFILE_FUNCTION();
 
-        glCreateVertexArrays(1,& m_RendererID);
+        glCreateVertexArrays(1, &m_RendererID);
     }
 
     OpenGLVertexArray::~OpenGLVertexArray()
     {
         HD_PROFILE_FUNCTION();
 
-        glDeleteVertexArrays(1,& m_RendererID);
+        glDeleteVertexArrays(1, &m_RendererID);
     }
 
     void OpenGLVertexArray::Bind() const
@@ -113,7 +113,7 @@ namespace Hydra
                                 ShaderDataTypeToOpenGLBaseType(element.Type),
                                 element.Normalized ? GL_TRUE : GL_FALSE,
                                 layout.GetStride(),
-                                (const void*)(sizeof(float) * count * i)
+                                (const void*)(element.Offset + sizeof(float) * count * i)
                             );
 						glVertexAttribDivisor(m_VertexBufferIndex, 1);
 						++m_VertexBufferIndex;

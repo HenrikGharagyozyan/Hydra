@@ -6,6 +6,11 @@
 #include <iomanip>
 #include <string>
 #include <thread>
+#include <mutex>
+#include <sstream>
+
+#include "Hydra/Core/Log.h"
+
 
 namespace Hydra
 {
