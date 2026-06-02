@@ -1,35 +1,7 @@
 #pragma once
 
 #include <memory>
-
-// ================= PLATFORM DETECTION =================
-#ifdef _WIN32
-    #ifdef _WIN64
-        #define HD_PLATFORM_WINDOWS
-    #else
-        #error "x86 Builds are not supported!"
-    #endif
-#elif defined(__APPLE__) || defined(__MACH__)
-    #include <TargetConditionals.h>
-    #if TARGET_IPHONE_SIMULATOR == 1
-        #error "iOS simulator is not supported!"
-    #elif TARGET_OS_IPHONE == 1
-        #define HD_PLATFORM_IOS
-        #error "iOS is not supported!"
-    #elif TARGET_OS_MAC == 1
-        #define HD_PLATFORM_MACOS
-        #error "MacOS is not supported!"
-    #else
-        #error "Unknown Apple platform!"
-    #endif
-#elif defined(__ANDROID__)
-    #define HD_PLATFORM_ANDROID
-    #error "Android is not supported!"
-#elif defined(__linux__)
-    #define HD_PLATFORM_LINUX
-#else
-    #error "Unknown platform!"
-#endif
+#include "Hydra/Core/PlatformDetection.h" 
 
 // ================= DLL EXPORT / IMPORT =================
 #ifdef HD_DYNAMIC_LINK
@@ -66,13 +38,25 @@
     #define HD_DEBUGBREAK()
 #endif
 
-// TODO:  Make this macro able to take in no arguments except condition
 #ifdef HD_ENABLE_ASSERTS
-    #define HD_ASSERT(x, ...) { if(!(x)) { HD_ERROR("Assertion Failed: {0}", __VA_ARGS__); HD_DEBUGBREAK(); } }
-    #define HD_CORE_ASSERT(x, ...) { if(!(x)) { HD_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); HD_DEBUGBREAK(); } }
+    #define HD_EXPAND_MACRO(x) x
+
+    // Internal implementations of assertions with and without messages
+    #define HD_ASSERT_NO_MSG(x) { if(!(x)) { HD_ERROR("Assertion Failed!"); HD_DEBUGBREAK(); } }
+    #define HD_ASSERT_WITH_MSG(x, ...) { if(!(x)) { HD_ERROR("Assertion Failed: {0}", __VA_ARGS__); HD_DEBUGBREAK(); } }
+
+    #define HD_CORE_ASSERT_NO_MSG(x) { if(!(x)) { HD_CORE_ERROR("Assertion Failed!"); HD_DEBUGBREAK(); } }
+    #define HD_CORE_ASSERT_WITH_MSG(x, ...) { if(!(x)) { HD_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); HD_DEBUGBREAK(); } }
+
+    // Macro selector that counts arguments and selects the desired overload
+    #define HD_GET_ASSERT_MACRO(_1, _2, _3, _4, _5, NAME, ...) NAME
+
+    // Final macros supporting HD_ASSERT(condition) and HD_ASSERT(condition, "Fmt", args...) calls
+    #define HD_ASSERT(...) HD_EXPAND_MACRO(HD_GET_ASSERT_MACRO(__VA_ARGS__, HD_ASSERT_WITH_MSG, HD_ASSERT_WITH_MSG, HD_ASSERT_WITH_MSG, HD_ASSERT_WITH_MSG, HD_ASSERT_NO_MSG)(__VA_ARGS__))
+    #define HD_CORE_ASSERT(...) HD_EXPAND_MACRO(HD_GET_ASSERT_MACRO(__VA_ARGS__, HD_CORE_ASSERT_WITH_MSG, HD_CORE_ASSERT_WITH_MSG, HD_CORE_ASSERT_WITH_MSG, HD_CORE_ASSERT_WITH_MSG, HD_CORE_ASSERT_NO_MSG)(__VA_ARGS__))
 #else
-    #define HD_ASSERT(x, ...)
-    #define HD_CORE_ASSERT(x, ...)
+    #define HD_ASSERT(...)
+    #define HD_CORE_ASSERT(...)
 #endif
 
 
@@ -83,8 +67,7 @@
 
 namespace Hydra 
 {
-
-    // Scope
+    // Scope Wrapper
     template<typename T>
     using Scope = std::unique_ptr<T>;
 
@@ -94,8 +77,7 @@ namespace Hydra
         return std::make_unique<T>(std::forward<Args>(args)...);
     }
 
-
-    // Ref
+    // Ref Wrapper
     template<typename T>
     using Ref = std::shared_ptr<T>;
 
@@ -104,5 +86,4 @@ namespace Hydra
     {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
-
 }
