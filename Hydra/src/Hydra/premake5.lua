@@ -8,16 +8,20 @@ project "Hydra"
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "hdpch.h"
-	pchsource "src/hdpch.cpp"
+	pchsource "../hdpch.cpp"
 
 	files
 	{
-		"src/**.h",
-		"src/**.cpp",
-		"vendor/stb_image/**.h",
-		"vendor/stb_image/**.cpp",
-		"vendor/glm/glm/**.hpp",
-		"vendor/glm/glm/**.inl",
+		"../hdpch.h",
+		"../hdpch.cpp",
+		"**.h",
+		"**.cpp",
+		"../Platform/OpenGL/**.h",
+		"../Platform/OpenGL/**.cpp",
+		"%{IncludeDir.stb_image}/**.h",
+		"%{IncludeDir.stb_image}/**.cpp",
+		"%{IncludeDir.glm}/glm/**.hpp",
+		"%{IncludeDir.glm}/glm/**.inl",
 	}
 
 	defines
@@ -28,8 +32,9 @@ project "Hydra"
 
 	includedirs
 	{
+		"..",
 		"src",
-		"vendor/spdlog/include",
+		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
@@ -42,21 +47,27 @@ project "Hydra"
 	{
 		"GLFW",
 		"Glad",
-		"ImGui",
-		"opengl32.lib"
+		"ImGui"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
+		files
+		{
+			"../Platform/Windows/**.h",
+			"../Platform/Windows/**.cpp"
+		}
 		links
 		{
 			"opengl32.lib"
 		}
-		defines
-		{
-		}
 
 	filter "system:linux"
+		files
+		{
+			"../Platform/Linux/**.h",
+			"../Platform/Linux/**.cpp"
+		}
 		links
 		{
 			"GL",

@@ -15,7 +15,7 @@ project "HydraEditor"
 
 	includedirs
 	{
-		"%{wks.location}/Hydra/vendor/spdlog/include",
+		"%{IncludeDir.spdlog}",
 		"%{wks.location}/Hydra/src",
 		"%{wks.location}/Hydra/vendor",
 		"%{IncludeDir.glm}",

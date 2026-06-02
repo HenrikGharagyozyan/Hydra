@@ -30,6 +30,7 @@ IncludeDir["Glad"] = "%{wks.location}/Hydra/vendor/Glad/include"
 IncludeDir["ImGui"] = "%{wks.location}/Hydra/vendor/imgui"
 IncludeDir["glm"] = "%{wks.location}/Hydra/vendor/glm"
 IncludeDir["stb_image"] = "%{wks.location}/Hydra/vendor/stb_image"
+IncludeDir["spdlog"] = "%{wks.location}/Hydra/vendor/spdlog/include"
 IncludeDir["entt"] = "%{wks.location}/Hydra/vendor/entt/include"
 
 group "Dependencies"
