@@ -19,6 +19,7 @@
 
 #include "Hydra/Scene/Scene.h"
 #include "Hydra/Scene/Entity.h"
+#include "Hydra/Scene/ScriptableEntity.h"
 #include "Hydra/Scene/Components.h"
 
 //---------Renderer----------------
