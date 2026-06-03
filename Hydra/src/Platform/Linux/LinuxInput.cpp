@@ -7,6 +7,7 @@
 
 namespace Hydra
 {
+
     bool Input::IsKeyPressed(const KeyCode key)
     {
         auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
@@ -41,4 +42,5 @@ namespace Hydra
     {
         return GetMousePosition().y;
     }
+    
 }

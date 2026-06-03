@@ -2,6 +2,7 @@
 .vs/
 .vscode/
 bin/
+!vendor/premake/bin/
 bin-int/
 
 # Files
