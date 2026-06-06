@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 
 extern Hydra::Application* Hydra::CreateApplication();
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 	Hydra::Log::Init();
 
