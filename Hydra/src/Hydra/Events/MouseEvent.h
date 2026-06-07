@@ -66,7 +66,7 @@ namespace Hydra
 	public:
 		MouseCode GetMouseButton() const { return m_Button; }
 
-		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
 
 	protected:
 		MouseButtonEvent(const MouseCode button)
@@ -76,6 +76,7 @@ namespace Hydra
 
 		MouseCode m_Button;
 	};
+
 
 	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
@@ -94,6 +95,7 @@ namespace Hydra
 
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 	};
+
 
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
