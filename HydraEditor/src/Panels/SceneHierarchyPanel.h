@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Hydra/Core/Base.h"
-#include "Hydra/Core/Log.h"
 #include "Hydra/Scene/Scene.h"
 #include "Hydra/Scene/Entity.h"
 

@@ -38,26 +38,9 @@
     #define HD_DEBUGBREAK()
 #endif
 
-#ifdef HD_ENABLE_ASSERTS
-    #define HD_EXPAND_MACRO(x) x
 
-    // Internal implementations of assertions with and without messages
-    #define HD_ASSERT_NO_MSG(x) { if(!(x)) { HD_ERROR("Assertion Failed!"); HD_DEBUGBREAK(); } }
-    #define HD_ASSERT_WITH_MSG(x, ...) { if(!(x)) { HD_ERROR("Assertion Failed: {0}", __VA_ARGS__); HD_DEBUGBREAK(); } }
-
-    #define HD_CORE_ASSERT_NO_MSG(x) { if(!(x)) { HD_CORE_ERROR("Assertion Failed!"); HD_DEBUGBREAK(); } }
-    #define HD_CORE_ASSERT_WITH_MSG(x, ...) { if(!(x)) { HD_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); HD_DEBUGBREAK(); } }
-
-    // Macro selector that counts arguments and selects the desired overload
-    #define HD_GET_ASSERT_MACRO(_1, _2, _3, _4, _5, NAME, ...) NAME
-
-    // Final macros supporting HD_ASSERT(condition) and HD_ASSERT(condition, "Fmt", args...) calls
-    #define HD_ASSERT(...) HD_EXPAND_MACRO(HD_GET_ASSERT_MACRO(__VA_ARGS__, HD_ASSERT_WITH_MSG, HD_ASSERT_WITH_MSG, HD_ASSERT_WITH_MSG, HD_ASSERT_WITH_MSG, HD_ASSERT_NO_MSG)(__VA_ARGS__))
-    #define HD_CORE_ASSERT(...) HD_EXPAND_MACRO(HD_GET_ASSERT_MACRO(__VA_ARGS__, HD_CORE_ASSERT_WITH_MSG, HD_CORE_ASSERT_WITH_MSG, HD_CORE_ASSERT_WITH_MSG, HD_CORE_ASSERT_WITH_MSG, HD_CORE_ASSERT_NO_MSG)(__VA_ARGS__))
-#else
-    #define HD_ASSERT(...)
-    #define HD_CORE_ASSERT(...)
-#endif
+#define HD_EXPAND_MACRO(x) x
+#define HD_STRINGIFY_MACRO(x) #x
 
 
 // ================= HELPERS =================
@@ -86,4 +69,8 @@ namespace Hydra
     {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
+
 }
+
+#include "Hydra/Core/Assert.h"
+#include "Hydra/Core/Log.h"

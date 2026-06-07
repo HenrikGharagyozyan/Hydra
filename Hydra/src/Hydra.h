@@ -7,6 +7,7 @@
 #include "Hydra/Core/Application.h"
 #include "Hydra/Core/Layer.h"
 #include "Hydra/Core/Log.h"
+#include "Hydra/Core/Assert.h"
 
 #include "Hydra/Core/Timestep.h"
 
