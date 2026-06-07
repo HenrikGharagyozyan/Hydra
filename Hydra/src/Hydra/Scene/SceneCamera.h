@@ -19,8 +19,8 @@ namespace Hydra
         SceneCamera();
         virtual ~SceneCamera() = default;
 
-        void SetOrthographic(float size, float nearClip, float farClip);
         void SetPerspective(float verticalFOV, float nearClip, float farClip);
+        void SetOrthographic(float size, float nearClip, float farClip);
 
         void SetViewportSize(uint32_t width, uint32_t height);
 
