@@ -52,8 +52,14 @@ project "Hydra"
 		"yaml-cpp"
 	}
 
+	removefiles
+	{
+		"src/Platform/**"
+	}
+
 	filter "system:windows"
 		systemversion "latest"
+		defines { "HD_PLATFORM_WINDOWS" }
 		files
 		{
 			"../Platform/Windows/**.h",
@@ -65,6 +71,8 @@ project "Hydra"
 		}
 
 	filter "system:linux"
+		systemversion "latest"
+		defines { "HD_PLATFORM_LINUX" }
 		pic "On"
 		files
 		{
