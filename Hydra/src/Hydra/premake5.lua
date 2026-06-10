@@ -40,14 +40,16 @@ project "Hydra"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.yaml_cpp}"
 	}
 
 	links
 	{
 		"GLFW",
 		"Glad",
-		"ImGui"
+		"ImGui",
+		"yaml-cpp"
 	}
 
 	filter "system:windows"
@@ -63,6 +65,7 @@ project "Hydra"
 		}
 
 	filter "system:linux"
+		pic "On"
 		files
 		{
 			"../Platform/Linux/**.h",

@@ -19,7 +19,7 @@ project "HydraEditor"
 		"%{wks.location}/Hydra/src",
 		"%{wks.location}/Hydra/vendor",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
 	}
 
 	links
@@ -27,7 +27,8 @@ project "HydraEditor"
 		"Hydra",
         "GLFW",
 		"Glad",
-		"ImGui"
+		"ImGui",
+		"yaml-cpp"
 	}
 
 	filter "system:windows"

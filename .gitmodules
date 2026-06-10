@@ -11,3 +11,6 @@
 	path = Hydra/vendor/imgui
 	url = https://github.com/1HenrikGharagyozyan/imgui
 	branch = hydra-docking
+[submodule "Hydra/vendor/yaml-cpp"]
+	path = Hydra/vendor/yaml-cpp
+	url = https://github.com/1HenrikGharagyozyan/yaml-cpp.git

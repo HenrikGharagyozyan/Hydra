@@ -27,7 +27,8 @@ project "Sandbox"
 		"Hydra",
 		"GLFW",
 		"Glad",
-		"ImGui"
+		"ImGui",
+		"yaml-cpp"
 	}
 
 	filter "system:windows"
