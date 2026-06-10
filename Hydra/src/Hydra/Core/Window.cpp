@@ -12,7 +12,7 @@
 namespace Hydra
 {
 
-    Scope<Window> Window::Create(const WindowProps &props)
+    Scope<Window> Window::Create(const WindowProps& props)
     {
         // Will be like this
         // #ifdef HD_PLATFORM_WINDOWS
