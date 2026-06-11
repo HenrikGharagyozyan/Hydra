@@ -10,7 +10,7 @@
 namespace Hydra 
 {
 
-    std::string FileDialogs::OpenFile(const char* filter)
+    std::optional<std::string> FileDialogs::OpenFile(const char* filter)
     {
         std::string command = "zenity --file-selection --title=\"Select File\"";
         
@@ -26,30 +26,29 @@ namespace Hydra
             }
         }
         else
-        {
             command += " --file-filter=\"*.hydra\""; // Default fallback
-        }
 
         std::string result;
         std::array<char, 256> buffer;
         
         std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
-        if (!pipe) return std::string();
+        if (!pipe) 
+            return std::nullopt; // Error opening pipe
 
         while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
-        {
             result += buffer.data();
-        }
 
         if (!result.empty() && result.back() == '\n')
-        {
             result.pop_back();
-        }
+
+        // If the user clicked "Cancel", zenity will return an empty string
+        if (result.empty())
+            return std::nullopt;
 
         return result;
     }
 
-    std::string FileDialogs::SaveFile(const char* filter)
+    std::optional<std::string> FileDialogs::SaveFile(const char* filter)
     {
         std::string command = "zenity --file-selection --save --confirm-overwrite --title=\"Save File\"";
         std::string defaultExt = ".hydra"; // Fallback if the filter is empty
@@ -68,41 +67,34 @@ namespace Hydra
                 // Extract the extension including the dot (e.g., from "*.hydra" get ".hydra")
                 size_t dotPos = filterSpec.find_last_of('.');
                 if (dotPos != std::string::npos)
-                {
                     defaultExt = filterSpec.substr(dotPos);
-                }
             }
         }
         else
-        {
             command += " --file-filter=\"*.hydra\"";
-        }
 
         std::string result;
         std::array<char, 256> buffer;
 
         std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
-        if (!pipe) return std::string();
+        if (!pipe) 
+            return std::nullopt;
 
         while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
-        {
             result += buffer.data();
-        }
 
         if (!result.empty() && result.back() == '\n')
-        {
             result.pop_back();
-        }
 
-        // 2. FIX: Check if the user manually added the extension
-        if (!result.empty() && !defaultExt.empty())
+        // If the user cancelled the save operation
+        if (result.empty())
+            return std::nullopt;
+
+        // Automatically append the extension if it is missing
+        if (!defaultExt.empty())
         {
-            // If the string length is less than the extension or the extension at the end doesn't match
-            if (result.size() < defaultExt.size() || 
-                result.compare(result.size() - defaultExt.size(), defaultExt.size(), defaultExt) != 0)
-            {
-                result += defaultExt; // Automatically append .hydra (or any other extension)
-            }
+            if (result.size() < defaultExt.size() || result.compare(result.size() - defaultExt.size(), defaultExt.size(), defaultExt) != 0)
+                result += defaultExt;
         }
 
         return result;
