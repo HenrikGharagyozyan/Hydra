@@ -284,7 +284,7 @@ namespace Hydra
 
 	void EditorLayer::OpenScene()
 	{
-		std::optional<std::string> filepath = FileDialogs::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
+		std::optional<std::string> filepath = FileDialogs::OpenFile("Hydra Scene (*.hydra)\0*.hydra\0");
 		if (filepath)
 		{
 			m_ActiveScene = CreateRef<Scene>();
@@ -298,7 +298,7 @@ namespace Hydra
 
 	void EditorLayer::SaveSceneAs()
 	{
-		std::optional<std::string> filepath = FileDialogs::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
+		std::optional<std::string> filepath = FileDialogs::SaveFile("Hydra Scene (*.hydra)\0*.hydra\0");
 		if (filepath)
 		{
 			SceneSerializer serializer(m_ActiveScene);
