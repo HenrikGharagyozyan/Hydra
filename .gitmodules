@@ -14,3 +14,6 @@
 [submodule "Hydra/vendor/yaml-cpp"]
 	path = Hydra/vendor/yaml-cpp
 	url = https://github.com/1HenrikGharagyozyan/yaml-cpp.git
+[submodule "Hydra/vendor/ImGuizmo"]
+	path = Hydra/vendor/ImGuizmo
+	url = https://github.com/1HenrikGharagyozyan/ImGuizmo

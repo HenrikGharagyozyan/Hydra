@@ -22,6 +22,9 @@ project "Hydra"
 		"%{IncludeDir.stb_image}/**.cpp",
 		"%{IncludeDir.glm}/glm/**.hpp",
 		"%{IncludeDir.glm}/glm/**.inl",
+
+		"%{IncludeDir.ImGuizmo}/src/ImGuizmo.h",
+		"%{IncludeDir.ImGuizmo}/src/ImGuizmo.cpp"
 	}
 
 	defines
@@ -41,7 +44,8 @@ project "Hydra"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.yaml_cpp}"
+		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.ImGuizmo}/src"
 	}
 
 	links
@@ -51,6 +55,9 @@ project "Hydra"
 		"ImGui",
 		"yaml-cpp"
 	}
+
+	filter "files:vendor/ImGuizmo/**.cpp"
+	flags { "NoPCH" }
 
 	removefiles
 	{

@@ -33,6 +33,7 @@ IncludeDir["stb_image"] = "%{wks.location}/Hydra/vendor/stb_image"
 IncludeDir["spdlog"] = "%{wks.location}/Hydra/vendor/spdlog/include"
 IncludeDir["entt"] = "%{wks.location}/Hydra/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "%{wks.location}/Hydra/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "%{wks.location}/Hydra/vendor/ImGuizmo"
 
 group "Dependencies"
 	include "vendor/premake"
