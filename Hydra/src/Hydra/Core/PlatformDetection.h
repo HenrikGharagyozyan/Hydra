@@ -31,7 +31,9 @@
     #error "Android is not supported by Hydra!"
 #elif defined(__linux__)
     /* Linux is fully supported via Hydra's Premake build system */
-    #define HD_PLATFORM_LINUX
+    #ifndef HD_PLATFORM_LINUX
+        #define HD_PLATFORM_LINUX
+    #endif
 #else
     /* Unknown toolchain or unhandled OS */
     #error "Unknown or completely unsupported platform!"

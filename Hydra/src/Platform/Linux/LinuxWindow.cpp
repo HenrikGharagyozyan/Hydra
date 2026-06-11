@@ -15,14 +15,6 @@
 
 namespace Hydra
 {
-    // Temp
-	Scope<Window> Window::Create(const WindowProps& props)
-	{
-		return CreateScope<LinuxWindow>(props);
-	}
-
-    
-
 	static uint8_t s_GLFWWindowCount = 0;
 
 	static void GLFWErrorCallback(int error, const char* description)
