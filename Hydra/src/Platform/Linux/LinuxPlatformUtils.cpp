@@ -5,38 +5,42 @@
 #include <cstdio>
 #include <memory>
 #include <array>
+#include <cstring> // For strlen
 
 namespace Hydra 
 {
 
     std::string FileDialogs::OpenFile(const char* filter)
     {
-        // Basic call to the zenity utility for file selection
-        std::string command = "zenity --file-selection --title=\"Select Scene\"";
+        std::string command = "zenity --file-selection --title=\"Select File\"";
         
-        // Note: Windows uses filters in the format "Hydra Scene (*.hydra)\0*.hydra\0"
-        // If strict filtering by extension is needed on Linux, you can parse the filter,
-        // but for a basic custom engine, a standard extension is usually added:
-        command += " --file-filter=\"*.hydra\""; 
+        // Parse Windows-style filter ("Name\0*.extension\0") into Zenity format ("Name | *.extension")
+        if (filter && strlen(filter) > 0)
+        {
+            std::string filterName(filter); 
+            const char* specPtr = filter + filterName.length() + 1;
+            if (*specPtr)
+            {
+                std::string filterSpec(specPtr);
+                command += " --file-filter=\"" + filterName + " | " + filterSpec + "\"";
+            }
+        }
+        else
+        {
+            command += " --file-filter=\"*.hydra\""; // Default fallback
+        }
 
         std::string result;
         std::array<char, 256> buffer;
         
-        // Open a pipe to read the output of the zenity command
         std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
-        
-        if (!pipe)
-        {
-            return std::string();
-        }
+        if (!pipe) return std::string();
 
-        // Read the file path returned by zenity
         while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
         {
             result += buffer.data();
         }
 
-        // Remove the newline character (\n) that zenity adds to the end of the path
         if (!result.empty() && result.back() == '\n')
         {
             result.pop_back();
@@ -47,19 +51,38 @@ namespace Hydra
 
     std::string FileDialogs::SaveFile(const char* filter)
     {
-        // For saving, add the --save and --confirm-overwrite (overwrite warning) flags
-        std::string command = "zenity --file-selection --save --confirm-overwrite --title=\"Save Scene\"";
-        command += " --file-filter=\"*.hydra\"";
+        std::string command = "zenity --file-selection --save --confirm-overwrite --title=\"Save File\"";
+        std::string defaultExt = ".hydra"; // Fallback if the filter is empty
+
+        // 1. Dynamically extract filter for the dialog and the default extension
+        if (filter && strlen(filter) > 0)
+        {
+            std::string filterName(filter); // Reads until the first \0 (e.g., "Hydra Scene (*.hydra)")
+            const char* specPtr = filter + filterName.length() + 1; // Move past the \0
+            
+            if (*specPtr)
+            {
+                std::string filterSpec(specPtr); // Reads the mask (e.g., "*.hydra")
+                command += " --file-filter=\"" + filterName + " | " + filterSpec + "\"";
+
+                // Extract the extension including the dot (e.g., from "*.hydra" get ".hydra")
+                size_t dotPos = filterSpec.find_last_of('.');
+                if (dotPos != std::string::npos)
+                {
+                    defaultExt = filterSpec.substr(dotPos);
+                }
+            }
+        }
+        else
+        {
+            command += " --file-filter=\"*.hydra\"";
+        }
 
         std::string result;
         std::array<char, 256> buffer;
 
         std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
-        
-        if (!pipe)
-        {
-            return std::string();
-        }
+        if (!pipe) return std::string();
 
         while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
         {
@@ -69,6 +92,17 @@ namespace Hydra
         if (!result.empty() && result.back() == '\n')
         {
             result.pop_back();
+        }
+
+        // 2. FIX: Check if the user manually added the extension
+        if (!result.empty() && !defaultExt.empty())
+        {
+            // If the string length is less than the extension or the extension at the end doesn't match
+            if (result.size() < defaultExt.size() || 
+                result.compare(result.size() - defaultExt.size(), defaultExt.size(), defaultExt) != 0)
+            {
+                result += defaultExt; // Automatically append .hydra (or any other extension)
+            }
         }
 
         return result;
