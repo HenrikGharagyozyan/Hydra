@@ -3,6 +3,9 @@
 #include "Hydra.h"
 #include "Panels/SceneHierarchyPanel.h"
 
+#include "Hydra/Renderer/EditorCamera.h"
+
+
 namespace Hydra
 {
 
@@ -40,6 +43,8 @@ namespace Hydra
         Entity m_SecondCamera;
 
 		bool m_PrimaryCamera = true;
+
+        EditorCamera m_EditorCamera;
 
         Ref<Texture2D> m_CheckerboardTexture;
 
