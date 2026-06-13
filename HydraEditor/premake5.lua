@@ -20,6 +20,7 @@ project "HydraEditor"
 		"%{wks.location}/Hydra/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links
