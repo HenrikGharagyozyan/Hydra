@@ -1,5 +1,5 @@
 #type vertex
-#version 400 core
+#version 450
 
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec4 a_Color;
@@ -11,7 +11,7 @@ uniform mat4 u_ViewProjection;
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
-flat out float v_TexIndex; 
+out flat float v_TexIndex; 
 out float v_TailingFactor;
 
 void main()
@@ -25,13 +25,13 @@ void main()
 
 
 #type fragment
-#version 400 core
+#version 450
 
 layout(location = 0) out vec4 color;
 
 in vec4 v_Color;
 in vec2 v_TexCoord;
-flat in float v_TexIndex;
+out flat float v_TexIndex;
 in float v_TailingFactor;
 
 uniform sampler2D u_Textures[32];
