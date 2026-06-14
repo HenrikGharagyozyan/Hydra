@@ -6,6 +6,8 @@
 #include <memory>
 #include <array>
 #include <cstring> // For strlen
+#include <filesystem> // For geting current directory
+
 
 namespace Hydra 
 {
@@ -13,6 +15,9 @@ namespace Hydra
     std::optional<std::string> FileDialogs::OpenFile(const char* filter)
     {
         std::string command = "zenity --file-selection --title=\"Select File\"";
+
+        std::string currentDir = std::filesystem::current_path().string();
+        command += " --filename=\"" + currentDir + "/\"";
         
         // Parse Windows-style filter ("Name\0*.extension\0") into Zenity format ("Name | *.extension")
         if (filter && strlen(filter) > 0)
@@ -52,6 +57,9 @@ namespace Hydra
     {
         std::string command = "zenity --file-selection --save --confirm-overwrite --title=\"Save File\"";
         std::string defaultExt = ".hydra"; // Fallback if the filter is empty
+
+        std::string currentDir = std::filesystem::current_path().string();
+        command += " --filename=\"" + currentDir + "/\"";
 
         // 1. Dynamically extract filter for the dialog and the default extension
         if (filter && strlen(filter) > 0)
