@@ -79,6 +79,18 @@ namespace Hydra
             return false;
         }
 
+        static GLenum HydraFBTextureFormatToGL(FramebufferTextureFormat format)
+        {
+            switch (format)
+            {
+                case FramebufferTextureFormat::RGBA8:       return GL_RGBA;
+                case FramebufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
+            }
+
+            HD_CORE_ASSERT(false, "Unknown framebuffer texture format!");
+            return 0;
+        }
+
     }
 
 
@@ -204,6 +216,15 @@ namespace Hydra
         int pixelData;
         glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
         return pixelData;
+    }
+
+    void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
+    {
+        HD_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "Attachment index out of bounds!");
+
+        auto& spec = m_ColorAttachmentSpecsifications[attachmentIndex];
+        glClearTexImage(m_ColorAttachments[attachmentIndex], 0,
+			Utils::HydraFBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
     }
 
 }
