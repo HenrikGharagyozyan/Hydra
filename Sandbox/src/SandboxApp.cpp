@@ -7,7 +7,8 @@
 class Sandbox : public Hydra::Application
 {
 public:
-	Sandbox()
+	Sandbox(Hydra::ApplicationCommandLineArgs args)
+		: Application("Sandbox", args)
 	{
 		// PushLayer(new ExampleLayer());
 		PushLayer(new Sandbox2D());
@@ -18,7 +19,7 @@ public:
 	}
 };
 
-Hydra::Application* Hydra::CreateApplication()
+Hydra::Application* Hydra::CreateApplication(ApplicationCommandLineArgs args)
 {
-	return new Sandbox();
+	return new Sandbox(args);
 }

@@ -44,7 +44,10 @@ project "Sandbox"
 			"GL",
 			"pthread",
 			"dl",
-			"X11"
+			"X11",
+			"shaderc_shared",
+            "spirv-cross-glsl",
+            "spirv-cross-core"
 		}
 
 	filter "configurations:Debug"

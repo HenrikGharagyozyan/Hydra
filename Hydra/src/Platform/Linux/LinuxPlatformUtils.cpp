@@ -12,7 +12,7 @@
 namespace Hydra 
 {
 
-    std::optional<std::string> FileDialogs::OpenFile(const char* filter)
+    std::string FileDialogs::OpenFile(const char* filter)
     {
         std::string command = "zenity --file-selection --title=\"Select File\"";
 
@@ -38,7 +38,7 @@ namespace Hydra
         
         std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
         if (!pipe) 
-            return std::nullopt; // Error opening pipe
+            return std::string(); // Error opening pipe
 
         while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
             result += buffer.data();
@@ -48,12 +48,12 @@ namespace Hydra
 
         // If the user clicked "Cancel", zenity will return an empty string
         if (result.empty())
-            return std::nullopt;
+            return std::string();
 
         return result;
     }
 
-    std::optional<std::string> FileDialogs::SaveFile(const char* filter)
+    std::string FileDialogs::SaveFile(const char* filter)
     {
         std::string command = "zenity --file-selection --save --confirm-overwrite --title=\"Save File\"";
         std::string defaultExt = ".hydra"; // Fallback if the filter is empty
@@ -86,7 +86,7 @@ namespace Hydra
 
         std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
         if (!pipe) 
-            return std::nullopt;
+            return std::string(); // Error opening pipe 
 
         while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
             result += buffer.data();
@@ -96,7 +96,7 @@ namespace Hydra
 
         // If the user cancelled the save operation
         if (result.empty())
-            return std::nullopt;
+            return std::string();
 
         // Automatically append the extension if it is missing
         if (!defaultExt.empty())

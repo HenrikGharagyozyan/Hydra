@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Hydra/Core/Base.h"
+#include "Hydra/Core/Application.h"
 
 
 #ifdef HD_PLATFORM_WINDOWS
 
-extern Hydra::Application *Hydra::CreateApplication();
+extern Hydra::Application* Hydra::CreateApplication(ApplicationCommandLineArgs args);
 
 int main(int argc, char **argv)
 {
@@ -14,7 +15,7 @@ int main(int argc, char **argv)
 	int a = 5;
 	HD_CORE_INFO("Hello! Var = {0}", a);
 
-	auto app = Hydra::CreateApplication();
+	auto app = Hydra::CreateApplication({ argc, argv });
 	app->Run();
 	delete app;
 }
@@ -24,14 +25,14 @@ int main(int argc, char **argv)
 
 #ifdef HD_PLATFORM_LINUX
 
-extern Hydra::Application* Hydra::CreateApplication();
+extern Hydra::Application* Hydra::CreateApplication(ApplicationCommandLineArgs args);
 
 int main(int argc, char** argv)
 {
 	Hydra::Log::Init();
 
 	HD_PROFILE_BEGIN_SESSION("Startup", "HydraProfile-Startup.json");
-	auto app = Hydra::CreateApplication();
+	auto app = Hydra::CreateApplication({ argc, argv });
 	HD_PROFILE_END_SESSION();
 
 	HD_PROFILE_BEGIN_SESSION("Runtime", "HydraProfile-Runtime.json");
