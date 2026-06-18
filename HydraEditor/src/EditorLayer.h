@@ -2,6 +2,7 @@
 
 #include "Hydra.h"
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/ContentBrowserPanel.h"
 
 #include "Hydra/Renderer/EditorCamera.h"
 
@@ -61,6 +62,7 @@ namespace Hydra
 
         // Panels
         SceneHierarchyPanel m_SceneHierarchyPanel;
+        ContentBrowserPanel m_ContentBrowserPanel;
     };
 
 }

@@ -1,35 +1,50 @@
-# Directories
+# ====================================================================
+# Hydra Engine - Git Ignore Configuration
+# ====================================================================
+
+# Build Output & Tool Binaries
+bin/
+bin-int/
+**/bin/
+**/bin-int/
+
+# Premake Automation Downloads
+vendor/premake/bin/premake5
+vendor/premake/bin/premake5.exe
+vendor/premake/bin/*.zip
+vendor/premake/bin/*.tar.gz
+vendor/premake/bin/LICENSE.txt
+
+# Python Cache
+**/__pycache__/
+
+# IDEs and Workspace Configurations
 .vs/
 .vscode/
-bin/
-!vendor/premake/bin/
-bin-int/
-
-# Files
 *.user
-*.so
-*.a
-*.o
-*.d
+*.suo
 
-# Premake generated files
-Makefile
-*.make
-*.workspace
-*.solution
-
-# Visual Studio
-.vs/
+# Visual Studio Build Files
 *.sln
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
 
-# Hydra files
+# Linux/macOS Build Artifacts
+Makefile
+*.make
+*.workspace
+*.solution
+*.o
+*.a
+*.so
+*.d
+*.dylib
+
+# Engine/Editor Cache & Dynamic Logs
+Hydra/vendor/VulkanSDK/
+HydraEditor/assets/cache/
 *.log
 
-# For Profile
-HydraProfile-Runtime.json
-HydraProfile-Shutdown.json
-HydraProfile-Startup.json
-
+# Profiling Logs
+HydraProfile-*.json
