@@ -27,7 +27,7 @@ namespace Hydra
 	};
 
 	// =================== MACROS ===================
-	// Исправлен макрос EVENT_CLASS_TYPE для кроссплатформенной сборки
+	// Fixed EVENT_CLASS_TYPE macro for cross-platform builds
 #define EVENT_CLASS_TYPE(type)                                                  \
 	static EventType GetStaticType() { return EventType::type; }                \
 	virtual EventType GetEventType() const override { return GetStaticType(); } \
