@@ -6,6 +6,7 @@ import time
 import urllib.error
 
 from zipfile import ZipFile
+import tarfile
 
 
 def GetSystemEnvironmentVariable(name):
@@ -138,3 +139,33 @@ def UnzipFile(filepath, deleteZipFile=True):
 
     if deleteZipFile:
         os.remove(zipFilePath)
+
+
+def UntarFile(filepath, deleteArchiveFile=True):
+    tarFilePath = os.path.abspath(filepath)
+    tarFileLocation = os.path.dirname(tarFilePath)
+
+    with tarfile.open(tarFilePath, 'r:gz') as tar:
+        members = tar.getmembers()
+        total = len(members)
+        extracted = 0
+        startTime = time.time()
+
+        for member in members:
+            tar.extract(member, path=tarFileLocation)
+            extracted += 1
+            done = int(50 * extracted / total)
+            percentage = (extracted / total) * 100
+            elapsedTime = time.time() - startTime
+            try:
+                avgFilesPerSecond = extracted / elapsedTime
+            except ZeroDivisionError:
+                avgFilesPerSecond = 0.0
+            sys.stdout.write('\r[{}{}] {:.2f}% ({:.1f} files/s)     '.format(
+                '█' * done, '.' * (50 - done), percentage, avgFilesPerSecond))
+            sys.stdout.flush()
+
+    sys.stdout.write('\n')
+
+    if deleteArchiveFile:
+        os.remove(tarFilePath)
