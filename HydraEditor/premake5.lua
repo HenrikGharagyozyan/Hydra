@@ -36,7 +36,11 @@ project "HydraEditor"
 		systemversion "latest"
 		links
 		{
-			"opengl32.lib"
+			"opengl32.lib",
+            "%{Library.Vulkan}",
+            "%{Library.ShaderC}",
+            "%{Library.SPIRV_Cross}",
+            "%{Library.SPIRV_Cross_GLSL}"
 		}
 		
 	filter "system:linux"

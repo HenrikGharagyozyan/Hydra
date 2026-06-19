@@ -1,0 +1,27 @@
+-- Hydra Dependencies
+
+VULKAN_SDK = os.getenv("VULKAN_SDK")
+
+-- Include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"]      = "%{wks.location}/Hydra/vendor/GLFW/include"
+IncludeDir["Glad"]      = "%{wks.location}/Hydra/vendor/Glad/include"
+IncludeDir["ImGui"]     = "%{wks.location}/Hydra/vendor/imgui"
+IncludeDir["glm"]       = "%{wks.location}/Hydra/vendor/glm"
+IncludeDir["stb_image"] = "%{wks.location}/Hydra/vendor/stb_image"
+IncludeDir["spdlog"]    = "%{wks.location}/Hydra/vendor/spdlog/include"
+IncludeDir["entt"]      = "%{wks.location}/Hydra/vendor/entt/include"
+IncludeDir["yaml_cpp"]  = "%{wks.location}/Hydra/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"]  = "%{wks.location}/Hydra/vendor/ImGuizmo"
+IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
+
+-- Library directories (for Windows)
+LibraryDir = {}
+LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
+
+-- Libraries (for Windows)
+Library = {}
+Library["Vulkan"]           = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
+Library["ShaderC"]          = "%{LibraryDir.VulkanSDK}/shaderc_shared.lib"
+Library["SPIRV_Cross"]      = "%{LibraryDir.VulkanSDK}/spirv-cross-core.lib"
+Library["SPIRV_Cross_GLSL"] = "%{LibraryDir.VulkanSDK}/spirv-cross-glsl.lib"
