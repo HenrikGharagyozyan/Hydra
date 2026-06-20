@@ -440,7 +440,7 @@ namespace Hydra
 			OpenScene(filepath);
 	}
 
-	void EditorLayer::OpenScene(const std::filesystem::path & path)
+	void EditorLayer::OpenScene(const std::filesystem::path& path)
 	{
 		m_ActiveScene = CreateRef<Scene>();
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);

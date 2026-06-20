@@ -23,6 +23,7 @@ vendor/premake/bin/LICENSE.txt
 .vscode/
 *.user
 *.suo
+.VSCodeCounter/
 
 # Visual Studio Build Files
 *.sln
