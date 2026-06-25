@@ -15,6 +15,9 @@ os.chdir('./../')  # Change from scripts directory to root
 premakeInstalled = PremakeRequirements.Validate()
 VulkanRequirements.Validate()
 
+print("\nUpdating submodules...")
+subprocess.call(["git", "submodule", "update", "--init", "--recursive"])
+
 if premakeInstalled:
     system = platform.system()
 
