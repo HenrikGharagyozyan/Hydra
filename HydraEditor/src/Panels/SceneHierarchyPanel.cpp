@@ -344,7 +344,11 @@ namespace Hydra
 					{
 						const char* path = (const char*)payload->Data;
 						std::filesystem::path texturePath = std::filesystem::path(g_AssetPath) / path;
-						component.Texture = Texture2D::Create(texturePath.string());
+						Ref<Texture2D> texture = Texture2D::Create(texturePath.string());
+						if (texture->IsLoaded())
+							component.Texture = texture;
+						else
+							HD_CORE_WARN("Failed to load texture: {0}", texturePath.string());
 					}
 					ImGui::EndDragDropTarget();
 				}
