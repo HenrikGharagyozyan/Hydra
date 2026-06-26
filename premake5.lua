@@ -27,6 +27,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 group "Dependencies"
     include "vendor/premake"
+    include "Hydra/vendor/Box2d"
     include "Hydra/vendor/GLFW"
     include "Hydra/vendor/Glad"
     include "Hydra/vendor/imgui"

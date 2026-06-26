@@ -38,6 +38,7 @@ project "Hydra"
 		"..",
 		"src",
 		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.Box2d}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
@@ -50,6 +51,7 @@ project "Hydra"
 
 	links
 	{
+		"Box2d",
 		"GLFW",
 		"Glad",
 		"ImGui",

@@ -12,6 +12,7 @@ IncludeDir["stb_image"] = "%{wks.location}/Hydra/vendor/stb_image"
 IncludeDir["spdlog"]    = "%{wks.location}/Hydra/vendor/spdlog/include"
 IncludeDir["entt"]      = "%{wks.location}/Hydra/vendor/entt/include"
 IncludeDir["yaml_cpp"]  = "%{wks.location}/Hydra/vendor/yaml-cpp/include"
+IncludeDir["Box2d"]     = "%{wks.location}/Hydra/vendor/Box2d/include"
 IncludeDir["ImGuizmo"]  = "%{wks.location}/Hydra/vendor/ImGuizmo"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 

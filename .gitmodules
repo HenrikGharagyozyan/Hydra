@@ -17,3 +17,6 @@
 [submodule "Hydra/vendor/ImGuizmo"]
 	path = Hydra/vendor/ImGuizmo
 	url = https://github.com/1HenrikGharagyozyan/ImGuizmo
+[submodule "Hydra/vendor/Box2d"]
+	path = Hydra/vendor/Box2d
+	url = https://github.com/HenrikGharagyozyan/box2d.git
