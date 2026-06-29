@@ -19,16 +19,13 @@ project "Sandbox"
 		"%{wks.location}/Hydra/src",
 		"%{wks.location}/Hydra/vendor",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.Box2d}"
 	}
 
 	links
 	{
-		"Hydra",
-		"GLFW",
-		"Glad",
-		"ImGui",
-		"yaml-cpp"
+		"Hydra"
 	}
 
 	filter "system:windows"
@@ -53,6 +50,11 @@ project "Sandbox"
             "spirv-cross-glsl",
             "spirv-cross-core"
 		}
+
+	defines
+	{
+		"HD_DYNAMIC_LINK"
+	}
 
 	filter "configurations:Debug"
 		defines "HD_DEBUG"

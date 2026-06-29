@@ -1,5 +1,5 @@
 project "Hydra"
-	kind "StaticLib"
+	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -30,7 +30,9 @@ project "Hydra"
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
-		"GLFW_INCLUDE_NONE"
+		"GLFW_INCLUDE_NONE",
+		"HD_DYNAMIC_LINK",
+		"HD_BUILD_DLL"
 	}
 
 	includedirs

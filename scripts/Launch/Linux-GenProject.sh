@@ -3,7 +3,7 @@
 # Get the absolute path to the scripts folder
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Navigate to the root of the Hydra project
-cd "$SCRIPT_DIR/.."
+cd "$SCRIPT_DIR/../.."
 
 echo "=== Building Hydra Engine (Debug) ==="
 if ! make config=debug; then

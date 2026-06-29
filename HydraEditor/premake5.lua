@@ -20,16 +20,13 @@ project "HydraEditor"
 		"%{wks.location}/Hydra/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.Box2d}"
 	}
 
 	links
 	{
-		"Hydra",
-        "GLFW",
-		"Glad",
-		"ImGui",
-		"yaml-cpp"
+		"Hydra"
 	}
 
 	filter "system:windows"
@@ -54,6 +51,16 @@ project "HydraEditor"
             "spirv-cross-glsl",
             "spirv-cross-core"
 		}
+
+	defines
+	{
+		"HD_DYNAMIC_LINK"
+	}
+
+	defines
+	{
+		"HD_DYNAMIC_LINK"
+	}
 
 	filter "configurations:Debug"
 		defines "HD_DEBUG"
