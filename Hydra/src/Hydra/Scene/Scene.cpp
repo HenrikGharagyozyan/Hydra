@@ -6,10 +6,26 @@
 
 #include <glm/glm.hpp>
 
+#include <box2d/box2d.h>
+
 #include "Entity.h"
+
 
 namespace Hydra
 {
+
+    static b2BodyType Rigidbody2DTypeToBox2DBodyType(Rigidbody2DComponent::BodyType type)
+    {
+        switch (type)
+        {
+            case Rigidbody2DComponent::BodyType::Static:    return b2_staticBody;
+            case Rigidbody2DComponent::BodyType::Dynamic:   return b2_dynamicBody;
+            case Rigidbody2DComponent::BodyType::Kinematic: return b2_kinematicBody;
+        }
+
+        HD_CORE_ASSERT(false, "Unknown Rigidbody2DComponent::BodyType");
+        return b2_staticBody;
+    }
 
     Scene::Scene()
     {
@@ -33,6 +49,48 @@ namespace Hydra
         m_Registry.destroy(entity);
     }
 
+    void Scene::OnRuntimeStart()
+	{
+		b2WorldDef worldDef = b2DefaultWorldDef();
+        worldDef.gravity = { 0.0f, -9.8f };
+        m_PhysicsWorld = b2CreateWorld(&worldDef);
+
+        auto view = m_Registry.view<Rigidbody2DComponent>();
+        for (auto e : view)
+        {
+            Entity entity = { e, this };
+            auto& transform = entity.GetComponent<TransformComponent>();
+            auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+
+            b2BodyDef bodyDef = b2DefaultBodyDef();
+            bodyDef.type = (rb2d.Type == Rigidbody2DComponent::BodyType::Static) ? b2_staticBody : 
+                        (rb2d.Type == Rigidbody2DComponent::BodyType::Dynamic) ? b2_dynamicBody : b2_kinematicBody;
+            
+            bodyDef.position = { transform.Translation.x, transform.Translation.y };
+            bodyDef.rotation = b2MakeRot(transform.Rotation.z);
+            
+            b2BodyId bodyId = b2CreateBody(m_PhysicsWorld, &bodyDef);
+            rb2d.RuntimeBody = (void*)(uintptr_t)bodyId.index1; // Сохраняем как ID
+
+            if (entity.HasComponent<BoxCollider2DComponent>())
+            {
+                auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+                b2Polygon shape = b2MakeBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
+                
+                b2ShapeDef shapeDef = b2DefaultShapeDef();
+                // shapeDef.density = bc2d.Density;
+                // shapeDef.friction = bc2d.Friction;
+                
+                b2CreatePolygonShape(bodyId, &shapeDef, &shape);
+            }
+        }
+	}
+
+	void Scene::OnRuntimeStop()
+	{
+		b2DestroyWorld(m_PhysicsWorld);
+	}
+
     void Scene::OnUpdateRuntime(Timestep ts)
     {
 
@@ -50,6 +108,30 @@ namespace Hydra
 
                 nsc.Instance->OnUpdate(ts); 
             });
+        }
+
+        // Physics
+        {
+            const float timeStep = ts;
+            const int32_t subStepCount = 4; // v3 рекомендует субстепы
+            b2World_Step(m_PhysicsWorld, timeStep, subStepCount);
+
+            auto view = m_Registry.view<Rigidbody2DComponent>();
+            for (auto e : view)
+            {
+                Entity entity = { e, this };
+                auto& transform = entity.GetComponent<TransformComponent>();
+                auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+
+                b2BodyId bodyId = { (uint16_t)(uintptr_t)rb2d.RuntimeBody, 0, 0 }; // Восстанавливаем ID
+                
+                b2Vec2 position = b2Body_GetPosition(bodyId);
+                float angle = b2Rot_GetAngle(b2Body_GetRotation(bodyId));
+                
+                transform.Translation.x = position.x;
+                transform.Translation.y = position.y;
+                transform.Rotation.z = angle;
+            }
         }
 
         // Render 2D
@@ -158,6 +240,16 @@ namespace Hydra
 
 	template<>
 	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	{
+	}
+
+    template<>
+	void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
 	{
 	}
 
