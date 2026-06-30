@@ -144,7 +144,7 @@ namespace Hydra
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		out << YAML::BeginMap; // Entity
-		out << YAML::Key << "Entity" << YAML::Value << "12837192831273"; // TODO: Entity ID goes here
+		out << YAML::Key << "Entity" << YAML::Value << "12837192831273"; // TODO: Entity ID goes here	
 
 		if (entity.HasComponent<TagComponent>())
 		{
@@ -289,8 +289,65 @@ namespace Hydra
 			return false;
 
 		std::string sceneName = data["Scene"].as<std::string>();
-		HD_CORE_TRACE("Deserializing scene '{0}'", sceneName);
 
+		DeserializeEntities(data);
+		HD_CORE_TRACE("Deserializing scene '{0}'", sceneName);
+		return true;
+	}
+
+	bool SceneSerializer::DeserializeRuntime(const std::string& filepath)
+	{
+		// Not implemented
+		HD_CORE_ASSERT(false);
+		return false;
+	}
+
+	void SceneSerializer::SerializeToStream(std::ostream& os)
+	{
+		YAML::Emitter out;
+		out << YAML::BeginMap;
+		out << YAML::Key << "Scene" << YAML::Value << "Untitled";
+		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
+		
+		auto view = m_Scene->m_Registry.view<TagComponent>();
+		for (auto entityID : view)
+		{
+			Entity entity = { entityID, m_Scene.get() };
+			if (!entity) 
+				continue;
+			SerializeEntity(out, entity); 
+		}
+
+		out << YAML::EndSeq;
+		out << YAML::EndMap;
+
+		os << out.c_str();
+	}
+
+	bool SceneSerializer::DeserializeFromStream(std::istream& is)
+	{
+		YAML::Node data;
+		try
+		{
+			data = YAML::Load(is);
+		}
+		catch (YAML::ParserException e)
+		{
+			return false;
+		}
+
+		if (!data["Scene"])
+			return false;
+
+		std::string sceneName = data["Scene"].as<std::string>();
+
+		DeserializeEntities(data);
+		HD_CORE_TRACE("Deserializing scene '{0}'", sceneName);
+		return true;
+	}
+
+	void SceneSerializer::DeserializeEntities(YAML::Node& data)
+	{
 		auto entities = data["Entities"];
 		if (entities)
 		{
@@ -365,15 +422,6 @@ namespace Hydra
 				}
 			}
 		}
-
-		return true;
-	}
-
-	bool SceneSerializer::DeserializeRuntime(const std::string& filepath)
-	{
-		// Not implemented
-		HD_CORE_ASSERT(false);
-		return false;
 	}
 
 }

@@ -19,6 +19,8 @@ namespace Hydra
         Scene();
         ~Scene();
 
+        static Ref<Scene> Copy(const Ref<Scene>& other);
+
         Entity CreateEntity(const std::string& name = std::string());
         void DestroyEntity(Entity entity);
 

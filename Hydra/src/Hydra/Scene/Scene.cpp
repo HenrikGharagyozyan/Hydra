@@ -1,7 +1,8 @@
 #include "hdpch.h"
 #include "Scene.h"
 
-#include "Components.h"
+#include "Hydra/Scene/Components.h"
+#include "Hydra/Scene/SceneSerializer.h"
 #include "Hydra/Renderer/Renderer2D.h"
 
 #include <glm/glm.hpp>
@@ -35,6 +36,22 @@ namespace Hydra
     {
     }
 
+    Ref<Scene> Scene::Copy(const Ref<Scene>& other)
+    {
+        Ref<Scene> newScene = CreateRef<Scene>();
+        newScene->m_ViewportWidth = other->m_ViewportWidth;
+        newScene->m_ViewportHeight = other->m_ViewportHeight;
+
+        std::stringstream ss;
+        SceneSerializer serializer(other);
+        serializer.SerializeToStream(ss);
+        
+        SceneSerializer deserializer(newScene);
+        deserializer.DeserializeFromStream(ss);
+        
+        return newScene;
+    }
+
     Entity Scene::CreateEntity(const std::string& name)
     {
         Entity entity = {m_Registry.create(), this};
@@ -61,6 +78,7 @@ namespace Hydra
             Entity entity = { e, this };
             auto& transform = entity.GetComponent<TransformComponent>();
             auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+            rb2d.RuntimeBody = nullptr;
 
             b2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = (rb2d.Type == Rigidbody2DComponent::BodyType::Static) ? b2_staticBody : 
@@ -70,12 +88,12 @@ namespace Hydra
             bodyDef.rotation = b2MakeRot(transform.Rotation.z);
             
             b2BodyId bodyId = b2CreateBody(m_PhysicsWorld, &bodyDef);
-            rb2d.RuntimeBody = (void*)(uintptr_t)bodyId.index1; // Сохраняем как ID
+            rb2d.RuntimeBody = new b2BodyId(bodyId); // Безопасно сохраняем всю структуру!
 
             if (entity.HasComponent<BoxCollider2DComponent>())
             {
                 auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
-                b2Polygon shape = b2MakeBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
+                b2Polygon shape = b2MakeBox(bc2d.Size.x * transform.Scale.x * 0.5f, bc2d.Size.y * transform.Scale.y * 0.5f);
                 
                 b2ShapeDef shapeDef = b2DefaultShapeDef();
                 // shapeDef.density = bc2d.Density;
@@ -88,7 +106,18 @@ namespace Hydra
 
 	void Scene::OnRuntimeStop()
 	{
-		b2DestroyWorld(m_PhysicsWorld);
+        auto view = m_Registry.view<Rigidbody2DComponent>();
+        for (auto e : view)
+        {
+            auto& rb2d = view.get<Rigidbody2DComponent>(e);
+            if (rb2d.RuntimeBody)
+            {
+                delete (b2BodyId*)rb2d.RuntimeBody;
+                rb2d.RuntimeBody = nullptr;
+            }
+        }
+
+        b2DestroyWorld(m_PhysicsWorld);
 	}
 
     void Scene::OnUpdateRuntime(Timestep ts)
@@ -112,6 +141,9 @@ namespace Hydra
 
         // Physics
         {
+            if (B2_IS_NULL(m_PhysicsWorld))
+                return;
+
             const float timeStep = ts;
             const int32_t subStepCount = 4; // v3 рекомендует субстепы
             b2World_Step(m_PhysicsWorld, timeStep, subStepCount);
@@ -123,14 +155,20 @@ namespace Hydra
                 auto& transform = entity.GetComponent<TransformComponent>();
                 auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
-                b2BodyId bodyId = { (uint16_t)(uintptr_t)rb2d.RuntimeBody, 0, 0 }; // Восстанавливаем ID
+                if (!rb2d.RuntimeBody)
+                    continue; // Если тело не создано, пропускаем
+
+                b2BodyId bodyId = *(b2BodyId*)rb2d.RuntimeBody; // Достаем структуру целиком
                 
-                b2Vec2 position = b2Body_GetPosition(bodyId);
-                float angle = b2Rot_GetAngle(b2Body_GetRotation(bodyId));
-                
-                transform.Translation.x = position.x;
-                transform.Translation.y = position.y;
-                transform.Rotation.z = angle;
+                if (b2Body_IsValid(bodyId))
+                {
+                    b2Vec2 position = b2Body_GetPosition(bodyId);
+                    float angle = b2Rot_GetAngle(b2Body_GetRotation(bodyId));
+                    
+                    transform.Translation.x = position.x;
+                    transform.Translation.y = position.y;
+                    transform.Rotation.z = angle;
+                }
             }
         }
 
