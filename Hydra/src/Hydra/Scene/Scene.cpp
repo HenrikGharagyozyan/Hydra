@@ -34,6 +34,17 @@ namespace Hydra
 
     Scene::~Scene()
     {
+        if (!B2_IS_NULL(m_PhysicsWorld))
+        {
+            auto view = m_Registry.view<Rigidbody2DComponent>();
+            for (auto e : view)
+            {
+                auto& rb2d = view.get<Rigidbody2DComponent>(e);
+                delete (b2BodyId*)rb2d.RuntimeBody;
+                rb2d.RuntimeBody = nullptr;
+            }
+            b2DestroyWorld(m_PhysicsWorld);
+        }
     }
 
     Ref<Scene> Scene::Copy(const Ref<Scene>& other)
@@ -118,6 +129,7 @@ namespace Hydra
         }
 
         b2DestroyWorld(m_PhysicsWorld);
+        m_PhysicsWorld = b2_nullWorldId;
 	}
 
     void Scene::OnUpdateRuntime(Timestep ts)
