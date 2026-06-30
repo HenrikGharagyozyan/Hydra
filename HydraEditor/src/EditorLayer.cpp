@@ -472,6 +472,7 @@ namespace Hydra
 
 	void EditorLayer::NewScene()
 	{
+		m_HoveredEntity = {};
 		m_EditorScene = CreateRef<Scene>();
 		m_ActiveScene = m_EditorScene;
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
@@ -497,6 +498,7 @@ namespace Hydra
 		SceneSerializer serializer(newScene);
 		if (serializer.Deserialize(path.string()))
 		{
+			m_HoveredEntity = {};
 			m_EditorScene = newScene;
 			m_ActiveScene = m_EditorScene;
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
@@ -516,6 +518,10 @@ namespace Hydra
 
 	void EditorLayer::OnScenePlay()
 	{
+		if (m_SceneState != SceneState::Edit)
+			return;
+
+		m_HoveredEntity = {};
 		m_SceneState = SceneState::Play;
 		m_ActiveScene = Scene::Copy(m_EditorScene);
 		m_ActiveScene->OnRuntimeStart();
@@ -523,6 +529,10 @@ namespace Hydra
 
 	void EditorLayer::OnSceneStop()
 	{
+		if (m_SceneState != SceneState::Play)
+			return;
+
+		m_HoveredEntity = {};
 		m_SceneState = SceneState::Edit;
 		m_ActiveScene->OnRuntimeStop();
 		m_ActiveScene = m_EditorScene;
