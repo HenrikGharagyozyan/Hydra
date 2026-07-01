@@ -1,18 +1,31 @@
 #pragma once
 
+#include "SceneCamera.h"
+#include "Hydra/Core/UUID.h"
+#include "Hydra/Renderer/Texture.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
-#include "SceneCamera.h"
-#include "ScriptableEntity.h"
-#include "Hydra/Renderer/Texture.h"
-
 
 namespace Hydra
 {
+    class ScriptableEntity;
+
+    struct IDComponent
+    {
+        UUID ID;
+
+        IDComponent() = default;
+        IDComponent(const IDComponent&) = default;
+        IDComponent(const UUID& id)
+            : ID(id)
+        {
+        }
+    };
 
     struct TagComponent
     {
@@ -70,6 +83,7 @@ namespace Hydra
         CameraComponent() = default;
         CameraComponent(const CameraComponent&) = default;
     };
+
 
     struct NativeScriptComponent
     {

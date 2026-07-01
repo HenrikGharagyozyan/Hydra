@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Hydra/Core/UUID.h"
+#include "Components.h"
 #include "Scene.h"
 
 #include "entt.hpp"
@@ -56,6 +58,8 @@ namespace Hydra
         operator bool() const { return m_EntityHandle != entt::null; }
         operator entt::entity() const { return m_EntityHandle; }
         operator uint32_t() const { return (uint32_t)m_EntityHandle; }
+
+        UUID GetUUID() { return GetComponent<IDComponent>().ID; }
 
     private:
         entt::entity m_EntityHandle{ entt::null };

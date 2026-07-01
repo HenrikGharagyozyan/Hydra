@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include "Hydra/Core/Timestep.h"
 
 namespace Hydra
 {

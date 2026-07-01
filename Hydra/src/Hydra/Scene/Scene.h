@@ -2,6 +2,7 @@
 
 #include "Hydra/Renderer/EditorCamera.h"
 #include "Hydra/Core/Timestep.h"
+#include "Hydra/Core/UUID.h"
 
 #include <entt.hpp>
 
@@ -22,6 +23,7 @@ namespace Hydra
         static Ref<Scene> Copy(const Ref<Scene>& other);
 
         Entity CreateEntity(const std::string& name = std::string());
+        Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
         void DestroyEntity(Entity entity);
 
         void OnRuntimeStart();
