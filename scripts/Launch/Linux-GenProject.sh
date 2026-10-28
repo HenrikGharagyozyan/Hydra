@@ -5,6 +5,24 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Navigate to the root of the Hydra project
 cd "$SCRIPT_DIR/../.."
 
+# Prefer the Premake binary that scripts/SetupPremake.py downloads, fall
+# back to one on PATH.
+PREMAKE="vendor/premake/bin/premake5"
+if [ ! -x "$PREMAKE" ]; then
+    if command -v premake5 &> /dev/null; then
+        PREMAKE=premake5
+    else
+        echo "premake5 not found. Run 'python3 Setup.py' first to download it."
+        exit 1
+    fi
+fi
+
+echo "=== Generating Makefiles ==="
+if ! "$PREMAKE" gmake2; then
+    echo "Project generation failed! Exiting..."
+    exit 1
+fi
+
 # Hydra-ScriptCore is a Premake/Mono project (built via the generated Makefile
 # below), not an SDK-style project - there is no .csproj, so msbuild/dotnet
 # build cannot target it. Pick whichever Mono C# compiler is actually
