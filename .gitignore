@@ -52,3 +52,10 @@ HydraProfile-*.json
 *Profile-*.json
 
 
+
+# C# build intermediates (the built .dll files themselves stay tracked so
+# the editor can load scripts without a Mono compiler installed)
+**/Intermediates/
+
+# Stale ImGui layout generated when an app is launched from the repo root
+/imgui.ini
