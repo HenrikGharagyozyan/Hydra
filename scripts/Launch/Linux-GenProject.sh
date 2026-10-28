@@ -18,7 +18,7 @@ else
     exit 1
 fi
 
-# Инкрементальная сборка C++ и C# (пересобирает ТОЛЬКО измененные файлы)
+# Incremental C++ and C# build (only changed files are recompiled)
 echo "=== Building Hydra Engine (Debug) ==="
 if ! make config=debug CSC="$CSHARP_COMPILER" -j"$(nproc)"; then
     echo "Build failed! Exiting..."

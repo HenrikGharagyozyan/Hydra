@@ -91,7 +91,7 @@ namespace Hydra
         auto& dstSceneRegistry = newScene->m_Registry;
         std::unordered_map<UUID, entt::entity> enttMap;
 
-        // Создаем сущности в новой сцене
+        // Create every entity in the new scene first, keeping its UUID
         auto idView = srcSceneRegistry.view<IDComponent>();
         for (auto e : idView)
         {

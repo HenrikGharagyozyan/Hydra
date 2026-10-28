@@ -7,7 +7,7 @@ from pathlib import Path
 import Utils
 
 class MonoConfiguration:
-    # Версия для скачивания на Windows
+    # Version downloaded by the Windows installer
     monoVersion = "6.12.0.199"
     monoInstallUrl = f"https://download.mono-project.com/archive/{monoVersion}/windows-installer/mono-{monoVersion}-x64-0.msi"
     monoInstallerPath = "./vendor/MonoInstaller.msi"
@@ -29,7 +29,7 @@ class MonoConfiguration:
         system = platform.system()
 
         if system == "Windows":
-            # Проверяем дефолтный путь установки Mono на Windows
+            # Look for Mono in its default Windows install location
             monoPath = Path("C:/Program Files/Mono/bin/mono.exe")
             if not monoPath.exists():
                 print("\nCould not find Mono installed at C:/Program Files/Mono")
@@ -39,7 +39,7 @@ class MonoConfiguration:
             return True
 
         elif system == "Linux":
-            # На Linux лучший способ проверить библиотеки для C++ - использовать pkg-config
+            # On Linux, pkg-config is the reliable way to find the embeddable C++ runtime
             try:
                 result = subprocess.run(["pkg-config", "--exists", "mono-2"], capture_output=True)
                 if result.returncode == 0:

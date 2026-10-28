@@ -15,7 +15,7 @@ workspace "Hydra"
     solution_items
     {
         ".editorconfig",
-        "Dependencies.lua" -- Добавили сюда, чтобы файл было видно в Visual Studio
+        "Dependencies.lua" -- Listed so the file shows up in the Visual Studio solution
     }
     
     flags
