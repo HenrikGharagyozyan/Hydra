@@ -116,6 +116,13 @@ namespace Hydra
 				out << scriptField.GetValue<Type>();  \
 				break
 
+// yaml-cpp emits 8-bit integers as characters but parses them back as numbers,
+// so they are widened to int on the way out to round-trip correctly.
+#define WRITE_SCRIPT_FIELD_AS_INT(FieldType, Type)         \
+			case ScriptFieldType::FieldType:               \
+				out << (int)scriptField.GetValue<Type>();  \
+				break
+
 #define READ_SCRIPT_FIELD(FieldType, Type)             \
 	case ScriptFieldType::FieldType:                   \
 	{                                                  \
@@ -262,12 +269,12 @@ namespace Hydra
 						WRITE_SCRIPT_FIELD(Float,   float     );
 						WRITE_SCRIPT_FIELD(Double,  double    );
 						WRITE_SCRIPT_FIELD(Bool,    bool      );
-						WRITE_SCRIPT_FIELD(Char,    char      );
-						WRITE_SCRIPT_FIELD(Byte,    int8_t    );
+						WRITE_SCRIPT_FIELD(Char,    uint16_t  );
+						WRITE_SCRIPT_FIELD_AS_INT(Byte,  int8_t  );
 						WRITE_SCRIPT_FIELD(Short,   int16_t   );
 						WRITE_SCRIPT_FIELD(Int,     int32_t   );
 						WRITE_SCRIPT_FIELD(Long,    int64_t   );
-						WRITE_SCRIPT_FIELD(UByte,   uint8_t   );
+						WRITE_SCRIPT_FIELD_AS_INT(UByte, uint8_t );
 						WRITE_SCRIPT_FIELD(UShort,  uint16_t  );
 						WRITE_SCRIPT_FIELD(UInt,    uint32_t  );
 						WRITE_SCRIPT_FIELD(ULong,   uint64_t  );
@@ -555,7 +562,7 @@ namespace Hydra
 								READ_SCRIPT_FIELD(Float,   float     );
 								READ_SCRIPT_FIELD(Double,  double    );
 								READ_SCRIPT_FIELD(Bool,    bool      );
-								READ_SCRIPT_FIELD(Char,    char      );
+								READ_SCRIPT_FIELD(Char,    uint16_t  );
 								READ_SCRIPT_FIELD(Byte,    int8_t    );
 								READ_SCRIPT_FIELD(Short,   int16_t   );
 								READ_SCRIPT_FIELD(Int,     int32_t   );
