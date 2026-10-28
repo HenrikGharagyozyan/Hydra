@@ -36,7 +36,7 @@ class VulkanConfiguration:
         else:
             print(f"\nLocated Vulkan SDK at {vulkanSDK}")
 
-        # Игнорируем жесткую проверку пути на Linux, так как SDK лежит в /usr
+        # Skip the strict path check on Linux, where the SDK is installed under /usr
         if platform.system() == "Windows" and cls.requiredVulkanVersion not in vulkanSDK:
             print(f"You don't have the correct Vulkan SDK version! "
                   f"(Engine requires {cls.requiredVulkanVersion})")

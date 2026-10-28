@@ -33,7 +33,8 @@ namespace Hydra
 		{ "System.Int16",   ScriptFieldType::Short  },
 		{ "System.Int32",   ScriptFieldType::Int    },
 		{ "System.Int64",   ScriptFieldType::Long   },
-		{ "System.Byte",    ScriptFieldType::Byte   },
+		{ "System.SByte",   ScriptFieldType::Byte   },
+		{ "System.Byte",    ScriptFieldType::UByte  },
 		{ "System.UInt16",  ScriptFieldType::UShort },
 		{ "System.UInt32",  ScriptFieldType::UInt   },
 		{ "System.UInt64",  ScriptFieldType::ULong  },
@@ -109,7 +110,7 @@ namespace Hydra
 			return assembly;
 		}
 
-		void PrintAssemblyTypes(MonoAssembly* assembly)
+		[[maybe_unused]] static void PrintAssemblyTypes(MonoAssembly* assembly)
 		{
 			MonoImage* image = mono_assembly_get_image(assembly);
 			const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
@@ -242,7 +243,7 @@ namespace Hydra
 #endif
 
 
-		ScriptFieldType MonoTypeToScriptFieldType(MonoType* monoType)
+		static ScriptFieldType MonoTypeToScriptFieldType(MonoType* monoType)
 		{
 			std::string typeName = mono_type_get_name(monoType);
 
@@ -288,7 +289,7 @@ namespace Hydra
 
 		InitMono();
 		// Relative to the running app's working directory (e.g. HydraEditor/),
-		// not the repo root - the assembly is built to <repo>/Hydra/Resources/Scripts.
+		// not the repo root - the assembly is built to <repo>/HydraEditor/Resources/Scripts.
 		LoadAssembly("Resources/Scripts/Hydra-ScriptCore.dll");
 
 		if (s_Data->CoreAssemblyImage == nullptr)
@@ -307,43 +308,7 @@ namespace Hydra
 		ScriptGlue::RegisterComponents();
 		ScriptGlue::RegisterFunctions();
 
-		// Retrieve and instantiate class
 		s_Data->EntityClass = ScriptClass("Hydra", "Entity", true);
-
-#if 0
-		MonoObject* instance = s_Data->EntityClass.Instantiate();
-		if (instance == nullptr)
-		{
-			HD_CORE_ERROR("ScriptEngine: failed to instantiate Hydra.Entity, scripting is disabled");
-			return;
-		}
-
-		// Call method
-		MonoMethod* printMessageFunc = s_Data->EntityClass.GetMethod("PrintMessage", 0);
-		s_Data->EntityClass.InvokeMethod(instance, printMessageFunc);
-
-		// Call method with param
-		MonoMethod* printIntFunc = s_Data->EntityClass.GetMethod("PrintInt", 1);
-
-		int value = 5;
-		void* param = &value;
-
-		s_Data->EntityClass.InvokeMethod(instance, printIntFunc, &param);
-
-		MonoMethod* printIntsFunc = s_Data->EntityClass.GetMethod("PrintInts", 2);
-		int value2 = 508;
-		void* params[2] =
-		{
-			&value,
-			&value2
-		};
-		s_Data->EntityClass.InvokeMethod(instance, printIntsFunc, params);
-
-		MonoString* monoString = mono_string_new(s_Data->AppDomain, "Hello World from C++!");
-		MonoMethod* printCustomMessageFunc = s_Data->EntityClass.GetMethod("PrintCustomMessage", 1);
-		void* stringParam = monoString;
-		s_Data->EntityClass.InvokeMethod(instance, printCustomMessageFunc, &stringParam);
-#endif
 	}
 
 	void ScriptEngine::Shutdown()
@@ -402,7 +367,6 @@ namespace Hydra
 		s_Data->AppDomain = mono_domain_create_appdomain("HydraScriptRuntime", nullptr);
 		mono_domain_set(s_Data->AppDomain, true);
 
-		// Move this maybe
 		s_Data->CoreAssembly = Utils::LoadMonoAssembly(filepath);
 		if (s_Data->CoreAssembly == nullptr)
 			return;
@@ -434,32 +398,44 @@ namespace Hydra
 	void ScriptEngine::OnCreateEntity(Entity entity)
 	{
 		const auto& sc = entity.GetComponent<ScriptComponent>();
-		if (ScriptEngine::EntityClassExists(sc.ClassName))
+		if (!ScriptEngine::EntityClassExists(sc.ClassName))
 		{
-			UUID entityID = entity.GetUUID();
-
-			Ref<ScriptInstance> instance = CreateRef<ScriptInstance>(s_Data->EntityClasses[sc.ClassName], entity);
-			s_Data->EntityInstances[entityID] = instance;
-
-			// Copy field values
-			if (s_Data->EntityScriptFields.find(entityID) != s_Data->EntityScriptFields.end())
-			{
-				const ScriptFieldMap& fieldMap = s_Data->EntityScriptFields.at(entityID);
-				for (const auto& [name, fieldInstance] : fieldMap)
-					instance->SetFieldValueInternal(name, fieldInstance.m_Buffer);
-			}
-
-			instance->InvokeOnCreate();
+			HD_CORE_WARN("ScriptEngine: entity '{}' references unknown script class '{}'", entity.GetName(), sc.ClassName);
+			return;
 		}
+
+		UUID entityID = entity.GetUUID();
+
+		Ref<ScriptInstance> instance = CreateRef<ScriptInstance>(s_Data->EntityClasses[sc.ClassName], entity);
+		s_Data->EntityInstances[entityID] = instance;
+
+		// Copy field values
+		if (s_Data->EntityScriptFields.find(entityID) != s_Data->EntityScriptFields.end())
+		{
+			const ScriptFieldMap& fieldMap = s_Data->EntityScriptFields.at(entityID);
+			for (const auto& [name, fieldInstance] : fieldMap)
+			{
+				// Entity fields are managed references; the stored UUID can't be
+				// written into them directly.
+				if (fieldInstance.Field.Type == ScriptFieldType::Entity)
+					continue;
+
+				instance->SetFieldValueInternal(name, fieldInstance.m_Buffer);
+			}
+		}
+
+		instance->InvokeOnCreate();
 	}
 
 	void ScriptEngine::OnUpdateEntity(Entity entity, Timestep ts)
 	{
-		UUID entityUUID = entity.GetUUID();
-		HD_CORE_ASSERT(s_Data->EntityInstances.find(entityUUID) != s_Data->EntityInstances.end());
+		// Entities whose script class failed to resolve in OnCreateEntity()
+		// have no instance - skip them instead of asserting every frame.
+		auto it = s_Data->EntityInstances.find(entity.GetUUID());
+		if (it == s_Data->EntityInstances.end())
+			return;
 
-		Ref<ScriptInstance> instance = s_Data->EntityInstances[entityUUID];
-		instance->InvokeOnUpdate((float)ts);
+		it->second->InvokeOnUpdate((float)ts);
 	}
 
 	Scene* ScriptEngine::GetSceneContext()
@@ -491,7 +467,7 @@ namespace Hydra
 		s_Data->EntityInstances.clear();
 	}
 
-	std::unordered_map<std::string, Ref<ScriptClass>> ScriptEngine::GetEntityClasses()
+	const std::unordered_map<std::string, Ref<ScriptClass>>& ScriptEngine::GetEntityClasses()
 	{
 		return s_Data->EntityClasses;
 	}
@@ -540,16 +516,12 @@ namespace Hydra
 			if (!isEntity)
 				continue;
 
-			Ref<ScriptClass> scriptClass =CreateRef<ScriptClass>(nameSpace, className);
+			Ref<ScriptClass> scriptClass = CreateRef<ScriptClass>(nameSpace, className);
 			s_Data->EntityClasses[fullName] = scriptClass;
 
-
-			// This routine is an iterator routine for retrieving the fields in a class.
-			// You must pass a gpointer that points to zero and is treated as an opaque handle
-			// to iterate over all of the elements. When no more values are available, the return value is NULL.
-
-			int fieldCount = mono_class_num_fields(monoClass);
-			HD_CORE_WARN("{} has {} fields:", className, fieldCount);
+			// mono_class_get_fields() is an iterator: it takes an opaque handle that
+			// starts out null and returns null once every field has been visited.
+			HD_CORE_TRACE("{} has {} field(s):", fullName, mono_class_num_fields(monoClass));
 			void* iterator = nullptr;
 			while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
 			{
@@ -559,16 +531,12 @@ namespace Hydra
 				{
 					MonoType* type = mono_field_get_type(field);
 					ScriptFieldType fieldType = Utils::MonoTypeToScriptFieldType(type);
-					HD_CORE_WARN("  {} ({})", fieldName, Utils::ScriptFieldTypeToString(fieldType));
+					HD_CORE_TRACE("  {} ({})", fieldName, Utils::ScriptFieldTypeToString(fieldType));
 
 					scriptClass->m_Fields[fieldName] = { fieldType, fieldName, field };
 				}
 			}
 		}
-
-		auto& entityClasses = s_Data->EntityClasses;
-
-		//mono_field_get_value()
 
 		HD_CORE_INFO("ScriptEngine: {} script class(es) available", s_Data->EntityClasses.size());
 	}

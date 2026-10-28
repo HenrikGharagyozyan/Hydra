@@ -20,8 +20,6 @@ namespace Hydra
 
 	EditorLayer::EditorLayer()
 		: Layer("EditorLayer")
-		, m_CameraController(1280.0f / 720.0f)
-		, m_SquareColor({ 0.2f, 0.3f, 0.8f, 1.0f })
 	{
 	}
 
@@ -29,7 +27,6 @@ namespace Hydra
 	{
 		HD_PROFILE_FUNCTION();
 
-		m_CheckerboardTexture = Texture2D::Create("assets/textures/Checkerboard.png");
 		m_IconPlay = Texture2D::Create("Resources/Icons/PlayButton.png");
 		m_IconSimulate = Texture2D::Create("Resources/Icons/SimulateButton.png");
 		m_IconStop = Texture2D::Create("Resources/Icons/StopButton.png");
@@ -71,7 +68,6 @@ namespace Hydra
 			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
 		{
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
@@ -90,9 +86,6 @@ namespace Hydra
 		{
 			case SceneState::Edit:
 			{
-				if (m_ViewportFocused)
-					m_CameraController.OnUpdate(ts);
-
 				m_EditorCamera.OnUpdate(ts);
 
 				m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
@@ -372,7 +365,6 @@ namespace Hydra
 
 	void EditorLayer::OnEvent(Event& e)
 	{
-		m_CameraController.OnEvent(e);
 		if (m_SceneState == SceneState::Edit)
 			m_EditorCamera.OnEvent(e);
 
@@ -533,10 +525,13 @@ namespace Hydra
 
 	void EditorLayer::NewScene()
 	{
+		if (m_SceneState != SceneState::Edit)
+			OnSceneStop();
+
 		m_HoveredEntity = {};
 		m_EditorScene = CreateRef<Scene>();
 		m_ActiveScene = m_EditorScene;
-		// m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
 		m_EditorScenePath = std::filesystem::path();
@@ -566,7 +561,7 @@ namespace Hydra
 		{
 			m_HoveredEntity = {};
 			m_EditorScene = newScene;
-			// m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 			m_SceneHierarchyPanel.SetContext(m_EditorScene);
 
 			m_ActiveScene = m_EditorScene;
@@ -591,7 +586,7 @@ namespace Hydra
 		std::string filepath = FileDialogs::SaveFile("Hydra Scene (*.hydra)\0*.hydra\0");
 		if (!filepath.empty())
 		{
-			SerializeScene(m_ActiveScene, filepath);
+			SerializeScene(m_EditorScene, filepath);
 			m_EditorScenePath = filepath;
 		}
 	}

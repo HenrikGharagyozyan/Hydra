@@ -116,6 +116,13 @@ namespace Hydra
 				out << scriptField.GetValue<Type>();  \
 				break
 
+// yaml-cpp emits 8-bit integers as characters but parses them back as numbers,
+// so they are widened to int on the way out to round-trip correctly.
+#define WRITE_SCRIPT_FIELD_AS_INT(FieldType, Type)         \
+			case ScriptFieldType::FieldType:               \
+				out << (int)scriptField.GetValue<Type>();  \
+				break
+
 #define READ_SCRIPT_FIELD(FieldType, Type)             \
 	case ScriptFieldType::FieldType:                   \
 	{                                                  \
@@ -239,9 +246,9 @@ namespace Hydra
 
 			// Fields
 			Ref<ScriptClass> entityClass = ScriptEngine::GetEntityClass(scriptComponent.ClassName);
-			const auto& fields = entityClass->GetFields();
-			if (fields.size() > 0)
+			if (entityClass && !entityClass->GetFields().empty())
 			{
+				const auto& fields = entityClass->GetFields();
 				out << YAML::Key << "ScriptFields" << YAML::Value;
 				auto& entityFields = ScriptEngine::GetScriptFieldMap(entity);
 				out << YAML::BeginSeq;
@@ -262,12 +269,12 @@ namespace Hydra
 						WRITE_SCRIPT_FIELD(Float,   float     );
 						WRITE_SCRIPT_FIELD(Double,  double    );
 						WRITE_SCRIPT_FIELD(Bool,    bool      );
-						WRITE_SCRIPT_FIELD(Char,    char      );
-						WRITE_SCRIPT_FIELD(Byte,    int8_t    );
+						WRITE_SCRIPT_FIELD(Char,    uint16_t  );
+						WRITE_SCRIPT_FIELD_AS_INT(Byte,  int8_t  );
 						WRITE_SCRIPT_FIELD(Short,   int16_t   );
 						WRITE_SCRIPT_FIELD(Int,     int32_t   );
 						WRITE_SCRIPT_FIELD(Long,    int64_t   );
-						WRITE_SCRIPT_FIELD(UByte,   uint8_t   );
+						WRITE_SCRIPT_FIELD_AS_INT(UByte, uint8_t );
 						WRITE_SCRIPT_FIELD(UShort,  uint16_t  );
 						WRITE_SCRIPT_FIELD(UInt,    uint32_t  );
 						WRITE_SCRIPT_FIELD(ULong,   uint64_t  );
@@ -402,7 +409,7 @@ namespace Hydra
 		{
 			data = YAML::LoadFile(filepath);
 		}
-		catch (YAML::ParserException e)
+		catch (const YAML::Exception& e)
 		{
 			HD_CORE_ERROR("Failed to load .hydra file '{0}'\n     {1}", filepath, e.what());
 			return false;
@@ -454,8 +461,9 @@ namespace Hydra
 		{
 			data = YAML::Load(is);
 		}
-		catch (YAML::ParserException e)
+		catch (const YAML::Exception& e)
 		{
+			HD_CORE_ERROR("Failed to parse scene from stream\n     {0}", e.what());
 			return false;
 		}
 
@@ -524,10 +532,13 @@ namespace Hydra
 					sc.ClassName = scriptComponent["ClassName"].as<std::string>();
 
 					auto scriptFields = scriptComponent["ScriptFields"];
-					if (scriptFields)
+					Ref<ScriptClass> entityClass = ScriptEngine::GetEntityClass(sc.ClassName);
+					if (scriptFields && !entityClass)
 					{
-						Ref<ScriptClass> entityClass = ScriptEngine::GetEntityClass(sc.ClassName);
-						HD_CORE_ASSERT(entityClass);
+						HD_CORE_WARN("Script class '{}' not found, ignoring its serialized fields", sc.ClassName);
+					}
+					else if (scriptFields)
+					{
 						const auto& fields = entityClass->GetFields();
 						auto& entityFields = ScriptEngine::GetScriptFieldMap(deserializedEntity);
 
@@ -537,14 +548,13 @@ namespace Hydra
 							std::string typeString = scriptField["Type"].as<std::string>();
 							ScriptFieldType type = Utils::ScriptFieldTypeFromString(typeString);
 
-							ScriptFieldInstance& fieldInstance = entityFields[name];
-							
-							// TODO(Yan): turn this assert into Hydranut log warning
-							HD_CORE_ASSERT(fields.find(name) != fields.end());
-
 							if (fields.find(name) == fields.end())
+							{
+								HD_CORE_WARN("Script field '{}.{}' no longer exists, skipping it", sc.ClassName, name);
 								continue;
+							}
 
+							ScriptFieldInstance& fieldInstance = entityFields[name];
 							fieldInstance.Field = fields.at(name);
 
 							switch (type)
@@ -552,7 +562,7 @@ namespace Hydra
 								READ_SCRIPT_FIELD(Float,   float     );
 								READ_SCRIPT_FIELD(Double,  double    );
 								READ_SCRIPT_FIELD(Bool,    bool      );
-								READ_SCRIPT_FIELD(Char,    char      );
+								READ_SCRIPT_FIELD(Char,    uint16_t  );
 								READ_SCRIPT_FIELD(Byte,    int8_t    );
 								READ_SCRIPT_FIELD(Short,   int16_t   );
 								READ_SCRIPT_FIELD(Int,     int32_t   );

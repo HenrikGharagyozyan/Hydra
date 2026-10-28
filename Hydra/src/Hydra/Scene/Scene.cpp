@@ -78,7 +78,7 @@ namespace Hydra
     template<typename... Component>
     static void CopyComponentIfExists(ComponentGroup<Component...>, Entity dst, Entity src)
     {
-        CopyComponentIfExists(dst, src);
+        CopyComponentIfExists<Component...>(dst, src);
     }
 
     Ref<Scene> Scene::Copy(const Ref<Scene>& other)
@@ -91,7 +91,7 @@ namespace Hydra
         auto& dstSceneRegistry = newScene->m_Registry;
         std::unordered_map<UUID, entt::entity> enttMap;
 
-        // Создаем сущности в новой сцене
+        // Create every entity in the new scene first, keeping its UUID
         auto idView = srcSceneRegistry.view<IDComponent>();
         for (auto e : idView)
         {
@@ -127,8 +127,10 @@ namespace Hydra
 
     void Scene::DestroyEntity(Entity entity)
     {
-        m_Registry.destroy(entity);
+        // GetUUID() reads the IDComponent, so it has to run before the
+        // registry destroys the entity's components.
         m_EntityMap.erase(entity.GetUUID());
+        m_Registry.destroy(entity);
     }
 
     void Scene::OnRuntimeStart()
@@ -269,6 +271,11 @@ namespace Hydra
 
     void Scene::OnViewportResize(uint32_t width, uint32_t height)
     {
+        // The editor viewport has no size until its first ImGui frame (e.g. when
+        // a scene is opened from the command line), and cameras assert on zero.
+        if (width == 0 || height == 0)
+            return;
+
         m_ViewportWidth = width;
         m_ViewportHeight = height;
 

@@ -134,6 +134,45 @@ namespace Hydra
 		ImGui::PopID();
 	}
 
+	// Raw storage big enough for any ScriptFieldType (same size as the buffer
+	// inside ScriptFieldInstance), so every field type goes through one path.
+	struct ScriptFieldValue
+	{
+		uint8_t Bytes[16];
+	};
+
+	// Draws an editor control for a script field value stored in 'data'.
+	// Returns true when the user changed the value.
+	static bool DrawScriptFieldControl(const char* label, ScriptFieldType type, void* data)
+	{
+		switch (type)
+		{
+			case ScriptFieldType::Float:   return ImGui::DragFloat(label, (float*)data, 0.1f);
+			case ScriptFieldType::Double:  return ImGui::DragScalar(label, ImGuiDataType_Double, data, 0.1f);
+			case ScriptFieldType::Bool:    return ImGui::Checkbox(label, (bool*)data);
+			case ScriptFieldType::Char:    return ImGui::DragScalar(label, ImGuiDataType_U16, data);
+			case ScriptFieldType::Byte:    return ImGui::DragScalar(label, ImGuiDataType_S8, data);
+			case ScriptFieldType::Short:   return ImGui::DragScalar(label, ImGuiDataType_S16, data);
+			case ScriptFieldType::Int:     return ImGui::DragScalar(label, ImGuiDataType_S32, data);
+			case ScriptFieldType::Long:    return ImGui::DragScalar(label, ImGuiDataType_S64, data);
+			case ScriptFieldType::UByte:   return ImGui::DragScalar(label, ImGuiDataType_U8, data);
+			case ScriptFieldType::UShort:  return ImGui::DragScalar(label, ImGuiDataType_U16, data);
+			case ScriptFieldType::UInt:    return ImGui::DragScalar(label, ImGuiDataType_U32, data);
+			case ScriptFieldType::ULong:   return ImGui::DragScalar(label, ImGuiDataType_U64, data);
+			case ScriptFieldType::Vector2: return ImGui::DragFloat2(label, (float*)data, 0.1f);
+			case ScriptFieldType::Vector3: return ImGui::DragFloat3(label, (float*)data, 0.1f);
+			case ScriptFieldType::Vector4: return ImGui::DragFloat4(label, (float*)data, 0.1f);
+
+			// Entity references can't be assigned from the editor yet
+			case ScriptFieldType::Entity:
+			case ScriptFieldType::None:
+				break;
+		}
+
+		ImGui::TextDisabled("%s (%s)", label, Utils::ScriptFieldTypeToString(type));
+		return false;
+	}
+
 	void SceneHierarchyPanel::SetSelectedEntity(Entity entity)
 	{
 		m_SelectionContext = entity;
@@ -143,8 +182,9 @@ namespace Hydra
     {        
         auto& tag = entity.GetComponent<TagComponent>().Tag;
 		
-		ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) 
-										| ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		// Entities have no children yet, so every node is drawn as a leaf
+		ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0)
+										| ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, "%s", tag.c_str());
 		if (ImGui::IsItemClicked())
 		{
@@ -161,13 +201,7 @@ namespace Hydra
 		}
 
 		if (opened)
-		{
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((void*)9817239, flags, "%s", tag.c_str());
-			if (opened)
-				ImGui::TreePop();
 			ImGui::TreePop();
-		}
 
 		if (entityDeleted)
 		{
@@ -348,14 +382,9 @@ namespace Hydra
 						const auto& fields = scriptInstance->GetScriptClass()->GetFields();
 						for (const auto& [name, field] : fields)
 						{
-							if (field.Type == ScriptFieldType::Float)
-							{
-								float data = scriptInstance->GetFieldValue<float>(name);
-								if (ImGui::DragFloat(name.c_str(), &data))
-								{
-									scriptInstance->SetFieldValue(name, data);
-								}
-							}
+							ScriptFieldValue value = scriptInstance->GetFieldValue<ScriptFieldValue>(name);
+							if (DrawScriptFieldControl(name.c_str(), field.Type, value.Bytes))
+								scriptInstance->SetFieldValue(name, value);
 						}
 					}
 				}
@@ -374,26 +403,18 @@ namespace Hydra
 							{
 								ScriptFieldInstance& scriptField = entityFields.at(name);
 
-								// Display control to set it maybe
-								if (field.Type == ScriptFieldType::Float)
-								{
-									float data = scriptField.GetValue<float>();
-									if (ImGui::DragFloat(name.c_str(), &data))
-										scriptField.SetValue(data);
-								}
+								ScriptFieldValue value = scriptField.GetValue<ScriptFieldValue>();
+								if (DrawScriptFieldControl(name.c_str(), field.Type, value.Bytes))
+									scriptField.SetValue(value);
 							}
 							else
 							{
-								// Display control to set it maybe
-								if (field.Type == ScriptFieldType::Float)
+								ScriptFieldValue value = {};
+								if (DrawScriptFieldControl(name.c_str(), field.Type, value.Bytes))
 								{
-									float data = 0.0f;
-									if (ImGui::DragFloat(name.c_str(), &data))
-									{
-										ScriptFieldInstance& fieldInstance = entityFields[name];
-										fieldInstance.Field = field;
-										fieldInstance.SetValue(data);
-									}
+									ScriptFieldInstance& fieldInstance = entityFields[name];
+									fieldInstance.Field = field;
+									fieldInstance.SetValue(value);
 								}
 							}
 						}
@@ -440,7 +461,7 @@ namespace Hydra
 				const char* currentBodyTypeString = bodyTypeStrings[(int)component.Type];
 				if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
 				{
-					for (int i = 0; i < 2; i++)
+					for (int i = 0; i < 3; i++)
 					{
 						bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
 						if (ImGui::Selectable(bodyTypeStrings[i], isSelected))
