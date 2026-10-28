@@ -239,9 +239,9 @@ namespace Hydra
 
 			// Fields
 			Ref<ScriptClass> entityClass = ScriptEngine::GetEntityClass(scriptComponent.ClassName);
-			const auto& fields = entityClass->GetFields();
-			if (fields.size() > 0)
+			if (entityClass && !entityClass->GetFields().empty())
 			{
+				const auto& fields = entityClass->GetFields();
 				out << YAML::Key << "ScriptFields" << YAML::Value;
 				auto& entityFields = ScriptEngine::GetScriptFieldMap(entity);
 				out << YAML::BeginSeq;
@@ -524,10 +524,13 @@ namespace Hydra
 					sc.ClassName = scriptComponent["ClassName"].as<std::string>();
 
 					auto scriptFields = scriptComponent["ScriptFields"];
-					if (scriptFields)
+					Ref<ScriptClass> entityClass = ScriptEngine::GetEntityClass(sc.ClassName);
+					if (scriptFields && !entityClass)
 					{
-						Ref<ScriptClass> entityClass = ScriptEngine::GetEntityClass(sc.ClassName);
-						HD_CORE_ASSERT(entityClass);
+						HD_CORE_WARN("Script class '{}' not found, ignoring its serialized fields", sc.ClassName);
+					}
+					else if (scriptFields)
+					{
 						const auto& fields = entityClass->GetFields();
 						auto& entityFields = ScriptEngine::GetScriptFieldMap(deserializedEntity);
 
@@ -537,14 +540,13 @@ namespace Hydra
 							std::string typeString = scriptField["Type"].as<std::string>();
 							ScriptFieldType type = Utils::ScriptFieldTypeFromString(typeString);
 
-							ScriptFieldInstance& fieldInstance = entityFields[name];
-							
-							// TODO(Yan): turn this assert into Hydranut log warning
-							HD_CORE_ASSERT(fields.find(name) != fields.end());
-
 							if (fields.find(name) == fields.end())
+							{
+								HD_CORE_WARN("Script field '{}.{}' no longer exists, skipping it", sc.ClassName, name);
 								continue;
+							}
 
+							ScriptFieldInstance& fieldInstance = entityFields[name];
 							fieldInstance.Field = fields.at(name);
 
 							switch (type)
