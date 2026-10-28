@@ -182,8 +182,9 @@ namespace Hydra
     {        
         auto& tag = entity.GetComponent<TagComponent>().Tag;
 		
-		ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) 
-										| ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		// Entities have no children yet, so every node is drawn as a leaf
+		ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0)
+										| ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, "%s", tag.c_str());
 		if (ImGui::IsItemClicked())
 		{
@@ -200,13 +201,7 @@ namespace Hydra
 		}
 
 		if (opened)
-		{
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((void*)9817239, flags, "%s", tag.c_str());
-			if (opened)
-				ImGui::TreePop();
 			ImGui::TreePop();
-		}
 
 		if (entityDeleted)
 		{
