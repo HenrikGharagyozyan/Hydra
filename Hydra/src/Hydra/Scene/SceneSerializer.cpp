@@ -402,7 +402,7 @@ namespace Hydra
 		{
 			data = YAML::LoadFile(filepath);
 		}
-		catch (YAML::ParserException e)
+		catch (const YAML::Exception& e)
 		{
 			HD_CORE_ERROR("Failed to load .hydra file '{0}'\n     {1}", filepath, e.what());
 			return false;
@@ -454,8 +454,9 @@ namespace Hydra
 		{
 			data = YAML::Load(is);
 		}
-		catch (YAML::ParserException e)
+		catch (const YAML::Exception& e)
 		{
+			HD_CORE_ERROR("Failed to parse scene from stream\n     {0}", e.what());
 			return false;
 		}
 
