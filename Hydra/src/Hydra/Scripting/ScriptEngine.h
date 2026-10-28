@@ -163,7 +163,7 @@ namespace Hydra
 		static Ref<ScriptInstance> GetEntityScriptInstance(UUID entityID);
 		
 		static Ref<ScriptClass> GetEntityClass(const std::string& name);
-		static std::unordered_map<std::string, Ref<ScriptClass>> GetEntityClasses();
+		static const std::unordered_map<std::string, Ref<ScriptClass>>& GetEntityClasses();
 		static ScriptFieldMap& GetScriptFieldMap(Entity entity);
 		
 		static MonoImage* GetCoreAssemblyImage();
