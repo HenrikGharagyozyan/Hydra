@@ -434,32 +434,44 @@ namespace Hydra
 	void ScriptEngine::OnCreateEntity(Entity entity)
 	{
 		const auto& sc = entity.GetComponent<ScriptComponent>();
-		if (ScriptEngine::EntityClassExists(sc.ClassName))
+		if (!ScriptEngine::EntityClassExists(sc.ClassName))
 		{
-			UUID entityID = entity.GetUUID();
-
-			Ref<ScriptInstance> instance = CreateRef<ScriptInstance>(s_Data->EntityClasses[sc.ClassName], entity);
-			s_Data->EntityInstances[entityID] = instance;
-
-			// Copy field values
-			if (s_Data->EntityScriptFields.find(entityID) != s_Data->EntityScriptFields.end())
-			{
-				const ScriptFieldMap& fieldMap = s_Data->EntityScriptFields.at(entityID);
-				for (const auto& [name, fieldInstance] : fieldMap)
-					instance->SetFieldValueInternal(name, fieldInstance.m_Buffer);
-			}
-
-			instance->InvokeOnCreate();
+			HD_CORE_WARN("ScriptEngine: entity '{}' references unknown script class '{}'", entity.GetName(), sc.ClassName);
+			return;
 		}
+
+		UUID entityID = entity.GetUUID();
+
+		Ref<ScriptInstance> instance = CreateRef<ScriptInstance>(s_Data->EntityClasses[sc.ClassName], entity);
+		s_Data->EntityInstances[entityID] = instance;
+
+		// Copy field values
+		if (s_Data->EntityScriptFields.find(entityID) != s_Data->EntityScriptFields.end())
+		{
+			const ScriptFieldMap& fieldMap = s_Data->EntityScriptFields.at(entityID);
+			for (const auto& [name, fieldInstance] : fieldMap)
+			{
+				// Entity fields are managed references; the stored UUID can't be
+				// written into them directly.
+				if (fieldInstance.Field.Type == ScriptFieldType::Entity)
+					continue;
+
+				instance->SetFieldValueInternal(name, fieldInstance.m_Buffer);
+			}
+		}
+
+		instance->InvokeOnCreate();
 	}
 
 	void ScriptEngine::OnUpdateEntity(Entity entity, Timestep ts)
 	{
-		UUID entityUUID = entity.GetUUID();
-		HD_CORE_ASSERT(s_Data->EntityInstances.find(entityUUID) != s_Data->EntityInstances.end());
+		// Entities whose script class failed to resolve in OnCreateEntity()
+		// have no instance - skip them instead of asserting every frame.
+		auto it = s_Data->EntityInstances.find(entity.GetUUID());
+		if (it == s_Data->EntityInstances.end())
+			return;
 
-		Ref<ScriptInstance> instance = s_Data->EntityInstances[entityUUID];
-		instance->InvokeOnUpdate((float)ts);
+		it->second->InvokeOnUpdate((float)ts);
 	}
 
 	Scene* ScriptEngine::GetSceneContext()
