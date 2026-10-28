@@ -525,6 +525,9 @@ namespace Hydra
 
 	void EditorLayer::NewScene()
 	{
+		if (m_SceneState != SceneState::Edit)
+			OnSceneStop();
+
 		m_HoveredEntity = {};
 		m_EditorScene = CreateRef<Scene>();
 		m_ActiveScene = m_EditorScene;
@@ -583,7 +586,7 @@ namespace Hydra
 		std::string filepath = FileDialogs::SaveFile("Hydra Scene (*.hydra)\0*.hydra\0");
 		if (!filepath.empty())
 		{
-			SerializeScene(m_ActiveScene, filepath);
+			SerializeScene(m_EditorScene, filepath);
 			m_EditorScenePath = filepath;
 		}
 	}
