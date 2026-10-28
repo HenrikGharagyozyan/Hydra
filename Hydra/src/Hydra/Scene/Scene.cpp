@@ -271,6 +271,11 @@ namespace Hydra
 
     void Scene::OnViewportResize(uint32_t width, uint32_t height)
     {
+        // The editor viewport has no size until its first ImGui frame (e.g. when
+        // a scene is opened from the command line), and cameras assert on zero.
+        if (width == 0 || height == 0)
+            return;
+
         m_ViewportWidth = width;
         m_ViewportHeight = height;
 
