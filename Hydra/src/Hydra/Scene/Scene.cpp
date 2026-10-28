@@ -127,8 +127,10 @@ namespace Hydra
 
     void Scene::DestroyEntity(Entity entity)
     {
-        m_Registry.destroy(entity);
+        // GetUUID() reads the IDComponent, so it has to run before the
+        // registry destroys the entity's components.
         m_EntityMap.erase(entity.GetUUID());
+        m_Registry.destroy(entity);
     }
 
     void Scene::OnRuntimeStart()
